@@ -1,4 +1,4 @@
-# IntroIA
+# IIA
 
 EE: Introduccion a la Inteligencia Artificial
 
