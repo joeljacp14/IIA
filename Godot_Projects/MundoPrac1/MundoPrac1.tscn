@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://icon.png" type="Texture" id=1]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 30, 29 )
+
+[node name="Mundo" type="Node2D"]
+
+[node name="Agente" type="KinematicBody2D" parent="."]
+position = Vector2( 223, 130 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Agente"]
+position = Vector2( -1, -1 )
+shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="Agente"]
+texture = ExtResource( 1 )
