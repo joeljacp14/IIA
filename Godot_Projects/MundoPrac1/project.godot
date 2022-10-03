@@ -11,6 +11,7 @@ config_version=4
 [application]
 
 config/name="practica1escena"
+run/main_scene="res://MundoPrac1.tscn"
 config/icon="res://icon.png"
 
 [gui]
