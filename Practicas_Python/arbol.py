@@ -44,7 +44,7 @@ class Nodo(object):
     def buscar(self, dato):
         if dato == self.dato:
             #return self.dato
-            print("Dato encontrado")
+            print("Dato", dato, "encontrado")
             return True
         if dato < self.dato:
             if self.izq:
@@ -52,17 +52,29 @@ class Nodo(object):
         if dato > self.dato:
             if self.der:
                 return self.der.buscar(dato)
-        print("No se encontro")
+        print("No se encontro", dato)
         return False
+    
+    def mas_izquierda(self):
+        if not self.izq:
+            return self.dato
+        return self.izq.mas_izquierda()
+    
+    def mas_derecha(self):
+        if not self.der:
+            return self.dato
+        return self.der.mas_derecha()
 
 raiz = Nodo(55)
 raiz.insertar(27)
 raiz.insertar(64)
 raiz.insertar(100)
 raiz.insertar(20)
-print(raiz.buscar(20))
-print(raiz.buscar(500))
-# 20, 27, 36, 
+raiz.insertar(67)
+raiz.insertar(60)
+raiz.insertar(99)
+raiz.insertar(1)
+raiz.insertar(53)
 
 print("Impresion preOrden")
 raiz.preOrden()
@@ -70,3 +82,9 @@ print("Impresion inOrden")
 raiz.inOrden()
 print("Impresion posOrden")
 raiz.posOrden()
+
+print("Busqueda", raiz.buscar(20))
+print("Busqueda", raiz.buscar(500))
+
+print("Nodo mas a la derecha del subarbol izquierdo es:", raiz.izq.mas_derecha())
+print("Nodo mas a la izquierda del subarbol derecho es:", raiz.der.mas_izquierda())
