@@ -9,7 +9,7 @@ class Nodo(object):
     
     def expande(self):
         ren, col = self.busca_espacio()
-        if (not ren):
+        if (not ren and not col):
             return None
         
         #generar arriba
@@ -57,15 +57,17 @@ class Nodo(object):
         print(" ")
 
 
-raiz = Nodo([[3, 1, 6], [4, "_", 8], [7, 5, 2]])
+raiz = Nodo([["_", 1, 6], [4, 3, 8], [7, 5, 2]])
 print("Estado inicial")
 raiz.imprime_estado()
 raiz.expande()
-print("Espacio arriba")
-raiz.hijos[0].imprime_estado()
-print("Espacio derecha")
-raiz.hijos[1].imprime_estado()
-print("Espacio abajo")
-raiz.hijos[2].imprime_estado()
-print("Espacio izquierda")
-raiz.hijos[3].imprime_estado()
+# print("Espacio arriba")
+# raiz.hijos[0].imprime_estado()
+# print("Espacio derecha")
+# raiz.hijos[1].imprime_estado()
+# print("Espacio abajo")
+# raiz.hijos[2].imprime_estado()
+# print("Espacio izquierda")
+# raiz.hijos[3].imprime_estado()
+for i in raiz.hijos:
+    i.imprime_estado()
