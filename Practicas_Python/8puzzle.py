@@ -8,7 +8,7 @@ class Nodo(object):
         self.estado = estado
         self.hijos = []
     
-    def expande(self, ficha):
+    def expande(self, ficha, meta):
         ren, col = self.busca_ficha(ficha)
         if (not ren or not col):
             return None
@@ -37,6 +37,27 @@ class Nodo(object):
             izquierda[ren][col - 1] = self.estado[ren][col]
             izquierda[ren][col] = self.estado[ren][col - 1]
             self.hijos.append(Nodo(izquierda))
+        
+        return self.camino_mas_corto(meta)
+        
+    def camino_mas_corto(self, meta):
+        lessHeur = 0
+        masCorto = None
+        cont = 0
+        for i in self.hijos:
+            if (cont == 0):
+                lessHeur = i.heuristica(meta)
+                masCorto = i
+            if(i.heuristica(meta) == 0):
+                print("Solucion encontrada")
+                i.imprime_estado()
+                return
+            if(i.heuristica(meta) < lessHeur):
+                lessHeur = i.heuristica(meta)
+                masCorto = i
+            cont += 1
+        
+        return masCorto.expande("_", meta)
     
     def busca_ficha(self, ficha):
         col = 0
@@ -86,7 +107,7 @@ nodoMeta = Nodo(meta)
 print("Heuristica", raiz.heuristica(nodoMeta))
 print("Estado inicial")
 raiz.imprime_estado()
-raiz.expande()
+raiz.expande("_", nodoMeta)
 # print("Espacio arriba")
 # raiz.hijos[0].imprime_estado()
 # print("Espacio derecha")
