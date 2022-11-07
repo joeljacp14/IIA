@@ -53,26 +53,27 @@ class Nodo(object):
         visitado = False
 
         for i in self.hijos:
-            heur = i.heuristica(meta)
+            #recorrer los visitados, si ese nodo (i) ya lo visite. lo ignoro
+            for j in visitados:
+                if (numpy.array_equal(j.estado, i.estado)):
+                    visitado = True
 
-            if (heur == 0):
-                print("Solucion encontrada")
-                i.imprime_estado()
-                return
-            if (cont == 0):
-                lessHeur = i.heuristica(meta)
-                masCorto = i
-            else:
-                if (heur < lessHeur):
-                    #recorrer los visitados, si ese nodo (i) ya lo visite. lo ignoro
-                    for j in visitados:
-                        if (numpy.array_equal(j.estado, i.estado)):
-                            visitado = True
-                    if not visitado:
+            if not visitado:
+                heur = i.heuristica(meta)
+
+                if (heur == 0):
+                    print("Solucion encontrada")
+                    i.imprime_estado()
+                    return
+                if (cont == 0):
+                    lessHeur = i.heuristica(meta)
+                    masCorto = i
+                else:
+                    if (heur < lessHeur):
                         lessHeur = heur
                         masCorto = i
-                        visitado = False
-
+            
+            visitado = False
             cont += 1
 
         #agregar este nodo a la lista de visitados
@@ -113,26 +114,3 @@ class Nodo(object):
         print("=====================")
         return sum
 
-
-estado_inicial = [
-    [7, 1, 6],
-    [4, "_", 8],
-    [3, 5, 2]
-]
-
-meta = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, "_"]
-]
-
-raiz = Nodo(estado_inicial)
-nodoMeta = Nodo(meta)
-visitados = []
-
-print("Heuristica", raiz.heuristica(nodoMeta))
-print("Estado inicial")
-raiz.imprime_estado()
-visitados.append(raiz)
-
-raiz.expande("_", nodoMeta, visitados)
