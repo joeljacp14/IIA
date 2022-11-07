@@ -1,3 +1,5 @@
+import copy
+
 import EigthPuzzle
 
 estado_inicial = [
@@ -19,6 +21,6 @@ visitados = []
 print("Heuristica", raiz.heuristica(nodoMeta))
 print("Estado inicial")
 raiz.imprime_estado()
-visitados.append(raiz)
+visitados.append(EigthPuzzle.Nodo(copy.deepcopy(raiz.estado)))
 
 raiz.expande("_", nodoMeta, visitados)

@@ -4,13 +4,14 @@ import math
 import sys
 import numpy
 
-#sys.setrecursionlimit(1000000)
+sys.setrecursionlimit(1000000)
 
 
 class Nodo(object):
     def __init__(self, estado):
         super(Nodo, self).__init__()
         self.estado = estado
+        self.heur = 0
         self.hijos = []
 
     def expande(self, ficha, meta, visitados):
@@ -46,39 +47,39 @@ class Nodo(object):
         self.camino_mas_corto(meta, visitados)
 
     def camino_mas_corto(self, meta, visitados):
-        heur = 0
-        lessHeur = 0
-        masCorto = None
+        heur_actual = 0
+        heur_menor = 0
+        mas_corto = None
         cont = 0
-        visitado = False
+        es_visitado = False
 
-        for i in self.hijos:
-            #recorrer los visitados, si ese nodo (i) ya lo visite. lo ignoro
-            for j in visitados:
-                if (numpy.array_equal(j.estado, i.estado)):
-                    visitado = True
+        for hijo in self.hijos:
+            #recorrer los visitados, si ese nodo (hijo) ya lo visite. lo ignoro
+            for visitado in visitados:
+                if (numpy.array_equal(visitado.estado, hijo.estado)):
+                    es_visitado = True
 
-            if not visitado:
-                heur = i.heuristica(meta)
+            if not es_visitado:
+                heur_actual = hijo.heuristica(meta)
 
-                if (heur == 0):
+                if (heur_actual == 0):
                     print("Solucion encontrada")
-                    i.imprime_estado()
+                    hijo.imprime_estado()
                     return
-                if (cont == 0):
-                    lessHeur = i.heuristica(meta)
-                    masCorto = i
+                if (heur_menor == 0):
+                    heur_menor = hijo.heuristica(meta)
+                    mas_corto = hijo
                 else:
-                    if (heur < lessHeur):
-                        lessHeur = heur
-                        masCorto = i
+                    if (heur_actual < heur_menor):
+                        heur_menor = heur_actual
+                        mas_corto = hijo
             
-            visitado = False
-            cont += 1
+            es_visitado = False
+            #cont += 1
 
         #agregar este nodo a la lista de visitados
-        visitados.append(masCorto)
-        masCorto.expande("_", meta, visitados)
+        visitados.append(Nodo(copy.deepcopy(mas_corto.estado)))
+        mas_corto.expande("_", meta, visitados)
 
     def busca_ficha(self, ficha):
         col = 0
@@ -109,8 +110,9 @@ class Nodo(object):
         rm, cm = meta.busca_ficha("_")
         re, ce = self.busca_ficha("_")
         sum += math.sqrt(math.pow((rm - re), 2)) + math.sqrt(math.pow((cm - ce), 2))
-        print("Heuristica: ", sum)
-        self.imprime_estado()
-        print("=====================")
+        # print("Heuristica: ", sum)
+        # self.imprime_estado()
+        # print("=====================")
+        self.heur = sum
         return sum
 
