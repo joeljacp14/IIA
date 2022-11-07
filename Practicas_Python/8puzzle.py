@@ -2,8 +2,9 @@ from mimetypes import init
 import copy
 import math
 import sys
+import numpy
 
-sys.setrecursionlimit(1000000)
+#sys.setrecursionlimit(1000000)
 
 
 class Nodo(object):
@@ -12,7 +13,7 @@ class Nodo(object):
         self.estado = estado
         self.hijos = []
 
-    def expande(self, ficha, meta):
+    def expande(self, ficha, meta, visitados):
         ren, col = self.busca_ficha(ficha)
         if (not ren or not col):
             return None
@@ -42,13 +43,14 @@ class Nodo(object):
             izquierda[ren][col] = self.estado[ren][col - 1]
             self.hijos.append(Nodo(izquierda))
 
-        self.camino_mas_corto(meta)
+        self.camino_mas_corto(meta, visitados)
 
-    def camino_mas_corto(self, meta):
+    def camino_mas_corto(self, meta, visitados):
         heur = 0
         lessHeur = 0
         masCorto = None
         cont = 0
+        visitado = False
 
         for i in self.hijos:
             heur = i.heuristica(meta)
@@ -62,12 +64,20 @@ class Nodo(object):
                 masCorto = i
             else:
                 if (heur < lessHeur):
-                    lessHeur = heur
-                    masCorto = i
+                    #recorrer los visitados, si ese nodo (i) ya lo visite. lo ignoro
+                    for j in visitados:
+                        if (numpy.array_equal(j.estado, i.estado)):
+                            visitado = True
+                    if not visitado:
+                        lessHeur = heur
+                        masCorto = i
+                        visitado = False
 
             cont += 1
 
-        masCorto.expande("_", meta)
+        #agregar este nodo a la lista de visitados
+        visitados.append(masCorto)
+        masCorto.expande("_", meta, visitados)
 
     def busca_ficha(self, ficha):
         col = 0
@@ -125,4 +135,4 @@ print("Estado inicial")
 raiz.imprime_estado()
 visitados.append(raiz)
 
-raiz.expande("_", nodoMeta)
+raiz.expande("_", nodoMeta, visitados)
