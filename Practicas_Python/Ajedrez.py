@@ -41,13 +41,126 @@ class Nodo(object):
                 print("No se encontro la ficha")
 
     def expande_alfil(self, meta, visitados):
-        pass
+        reg = col = 0
+        try:
+            reg = col = self.busca_alfil()
+            izq = col - 1
+            der = col + 1
+            regtmp = reg - 1
+            #movimientos en diagonales a la izquierda
+            while izq >= 0 and regtmp >= 0:
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[regtmp][izq] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[regtmp][izq]
+                self.hijos.append(Nodo(movimiento))
+                regtmp -= 1
+                izq -= 1
+            #movimientos en diagonal a la derecha
+            regtmp = reg - 1
+            while der <= 7 and regtmp >= 0:
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[regtmp][der] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[regtmp][der]
+                self.hijos.append(Nodo(movimiento))
+                regtmp -= 1
+                der += 1
+        except:
+            print("No se pudieron crear los movimientos")
+
 
     def expande_caballo(self):
-        pass
+        try:
+            reg = col = self.busca_caballo()
+            #primer movimiento
+            movimiento = copy.deepcopy(self.estado)
+            movimiento[reg + 2][col - 1] = self.estado[reg][col]
+            movimiento[reg][col] = self.estado[reg + 2][col - 1]
+            self.hijos.append(Nodo(movimiento))
+            #segundo movimiento
+            movimiento = copy.deepcopy(self.estado)
+            movimiento[reg + 2][col + 1] = self.estado[reg][col]
+            movimiento[reg][col] = self.estado[reg + 2][col + 1]
+            self.hijos.append(Nodo(movimiento))
+        except:
+            print("no se pudieron crear los movimientos")
 
     def expande_reina(self):
-        pass
+        try:
+            reg = col = self.busca_reina()
+            # movimientos en diagonal arriba - izquierda
+            izq = col - 1
+            arr = reg - 1
+            while izq >= 0 and arr >= 0:
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[arr][izq] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[arr][izq]
+                self.hijos.append(Nodo(movimiento))
+                arr -= 1
+                izq -= 1
+            # movimiento arriba
+            arr = reg - 1
+            while arr >= 0:
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[arr][col] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[arr][col]
+                self.hijos.append(Nodo(movimiento))
+                arr -= 1
+            # movimientos en diagonal arriba - derecha
+            arr = reg - 1
+            der = col + 1
+            while der <= 7 and arr >= 0:
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[arr][der] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[arr][der]
+                self.hijos.append(Nodo(movimiento))
+                arr -= 1
+                der += 1
+            #movimiento derecha
+            der = col + 1
+            while der <= 7:
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[reg][der] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[reg][der]
+                self.hijos.append(Nodo(movimiento))
+                der += 1
+            #movimiento abajo - derecha
+            aba = reg + 1
+            der = col + 1
+            while aba <= 7 and der <= 7:
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[aba][der] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[aba][der]
+                self.hijos.append(Nodo(movimiento))
+                aba += 1
+                der += 1
+            #movimiento abajo
+            aba = reg + 1
+            while aba <= 7:
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[aba][col] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[aba][col]
+                self.hijos.append(Nodo(movimiento))
+                aba += 1
+            #movimiento abajo - izquierda
+            aba = reg + 1
+            izq = col - 1
+            while izq >= 0 and aba <= 7:
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[aba][izq] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[aba][izq]
+                self.hijos.append(Nodo(movimiento))
+                aba += 1
+                izq -= 1
+            #movimiento izquierda
+            izq = col - 1
+            while izq >= 0:
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[reg][izq] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[reg][izq]
+                self.hijos.append(Nodo(movimiento))
+                izq -= 1
+        except:
+            print("no se pud crear los movimientos")
 
     def busca_peon_del_rey(self, color):
         col = reg = 0
