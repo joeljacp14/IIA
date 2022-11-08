@@ -1,3 +1,4 @@
+import copy
 import string
 class Nodo(object):
     def __init__(self, estado):
@@ -6,13 +7,40 @@ class Nodo(object):
         self.heur = 0
         self.hijos = []
     
-    def expande_peon(self, color):
+    def expande_peon(self, color, visitados):
+        reg = col = 0
         if (color == 'b'):
-            pass
+            try:
+                reg = col = self.busca_peon_del_rey(color)
+                #primer posible movimiento
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[reg + 1][col] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[reg + 1][col]
+                self.hijos.append(Nodo(movimiento))
+                #segundo psible movimiento
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[reg + 2][col] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[reg + 2][col]
+                self.hijos.append(Nodo(movimiento))
+            except:
+                print("No se encontro la ficha")
         else:
-            pass
+            try:
+                reg = col = self.busca_peon_del_rey(color)
+                # primer posible movimiento
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[reg - 1][col] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[reg - 1][col]
+                self.hijos.append(Nodo(movimiento))
+                # segundo psible movimiento
+                movimiento = copy.deepcopy(self.estado)
+                movimiento[reg - 2][col] = self.estado[reg][col]
+                movimiento[reg][col] = self.estado[reg - 2][col]
+                self.hijos.append(Nodo(movimiento))
+            except:
+                print("No se encontro la ficha")
 
-    def expande_alfil(self):
+    def expande_alfil(self, meta, visitados):
         pass
 
     def expande_caballo(self):
@@ -33,6 +61,7 @@ class Nodo(object):
                         return (reg, col)
                 col += 1
             reg += 1
+            col = 0
         return None, None
 
     def busca_alfil(self):
@@ -44,6 +73,7 @@ class Nodo(object):
                         return (reg, col)
                 col += 1
             reg += 1
+            col = 0
         return (None, None)
 
     def busca_caballo(self):
@@ -55,6 +85,7 @@ class Nodo(object):
                         return (reg, col)
                 col += 1
             reg += 1
+            col = 0
         return (None, None)
 
     def busca_reina(self):
@@ -65,6 +96,7 @@ class Nodo(object):
                     return (reg, col)
                 col += 1
             reg += 1
+            col = 0
         return (None, None)
 
     def imprime_estado(self):
