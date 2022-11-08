@@ -42,15 +42,29 @@ class Nodo(object):
                 if c == "bA":
                     if self.estado[reg][col - 1] == "bK" and self.estado[reg][col + 1] == "bC":
                         return (reg, col)
+                col += 1
+            reg += 1
         return (None, None)
 
     def busca_caballo(self):
-        col = reg = 0
+        reg = col = 0
         for r in self.estado:
             for c in r:
                 if r == 0:
                     if c == "nC":
-                        return (col, reg)
+                        return (reg, col)
+                col += 1
+            reg += 1
+        return (None, None)
+
+    def busca_reina(self):
+        reg = col = 0
+        for r in self.estado:
+            for c in r:
+                if c == "bQ":
+                    return (reg, col)
+                col += 1
+            reg += 1
         return (None, None)
 
     def imprime_estado(self):
