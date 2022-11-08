@@ -45,7 +45,13 @@ class Nodo(object):
         return (None, None)
 
     def busca_caballo(self):
-        pass
+        col = reg = 0
+        for r in self.estado:
+            for c in r:
+                if r == 0:
+                    if c == "nC":
+                        return (col, reg)
+        return (None, None)
 
     def imprime_estado(self):
         for ren in self.estado:
