@@ -73,3 +73,58 @@ class Nodo(object):
                 print(col, end=" ")
             print(" ")
         print(" ")
+
+
+
+
+
+##  De aca para abajo los cambios
+##  Descomenta con Ctrl + k + u
+
+#     def busca_peon_del_rey(self, color, matriz):
+#         # col = reg = 0
+#         for r in range(len(matriz)):
+#             for c in range(len(matriz[0])):
+#                 if color == 'n':
+#                     if matriz[r][c] == "nP" and matriz[r - 1][c] == "nK":
+#                         return (r, c)
+#                 else:
+#                     if matriz[r][c] == "bP" and matriz[r + 1][c] == "bK":
+#                         return (r, c)
+#             #     col += 1
+#             # reg += 1
+#         return (None, None)
+
+#     def busca_alfil(self, matriz):
+#         # col = reg = 0
+#         for r in range(len(matriz)):
+#             for c in range(len(matriz[0])):
+#                 if matriz[r][c] == "bA":
+#                     if matriz[r][c - 1] == "bK" and matriz[r][c + 1] == "bC":
+#                         return (r, c)
+#             #     col += 1
+#             # reg += 1
+#         return (None, None)
+
+#     def busca_caballo(self, matriz):
+#         # reg = col = 0
+#         for r in range(len(matriz)):
+#             for c in range(len(matriz[0])):
+#                 if r == 0:
+#                     if matriz[r][c] == "nC":
+#                         return (r, c)
+#             #     col += 1
+#             # reg += 1
+#         return (None, None)
+
+# ## La c la usas como iterador, por lo tanto va recorriendo cada casilla y no solo las columnas, por eso nunca cumple las otras condiciones
+# ## Le agrego como parametro una matri, ese seria el estado inicial y de esa manera para que sea mas entendible el recorrido  
+#     def busca_reina(self, matriz):
+#         # reg = col = 0
+#         for r in range(len(matriz)):
+#             for c in range(len(matriz[0])):
+#                 if matriz[r][c] == "bQ":
+#                     return (r, c)
+#             #     col += 1
+#             # reg += 1
+#         return (None, None)
