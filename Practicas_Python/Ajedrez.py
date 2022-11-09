@@ -1,5 +1,6 @@
 import copy
-import string
+import math
+
 class Nodo(object):
     def __init__(self, estado):
         super(Nodo, self).__init__()
@@ -7,7 +8,7 @@ class Nodo(object):
         self.heur = 0
         self.hijos = []
     
-    def expande_peon(self, color, visitados):
+    def expande_peon(self, color):
         reg = col = 0
         if (color == 'b'):
             try:
@@ -17,11 +18,12 @@ class Nodo(object):
                 movimiento[reg + 1][col] = self.estado[reg][col]
                 movimiento[reg][col] = self.estado[reg + 1][col]
                 self.hijos.append(Nodo(movimiento))
-                #segundo psible movimiento
+                #segundo posible movimiento
                 movimiento = copy.deepcopy(self.estado)
                 movimiento[reg + 2][col] = self.estado[reg][col]
                 movimiento[reg][col] = self.estado[reg + 2][col]
                 self.hijos.append(Nodo(movimiento))
+
             except:
                 print("No se encontro la ficha")
         else:
@@ -160,18 +162,63 @@ class Nodo(object):
                 self.hijos.append(Nodo(movimiento))
                 izq -= 1
         except:
-            print("no se pud crear los movimientos")
+            print("no se pudo crear los movimientos")
+
+    def heuristica(self, meta, ficha):
+        h = 0
+        re = ce = rm = cm = 0
+        match ficha:
+            case "bP":
+                re, ce = self.busca_peon_del_rey("b")
+                print(re, ce, rm, cm)
+                h = abs(4 - re) + abs(4 - ce)
+            case "nP":
+                re, ce = self.busca_peon_del_rey("n")
+                h = abs(3 - re) + abs(4 - ce)
+            case "bA":
+                re, ce = self.busca_alfil()
+                h = abs(4 - re) + abs(2 - ce)
+            case "nC":
+                re, ce = self.busca_caballo()
+                h = abs(2 - re) + abs(2 - ce)
+            case "bQ":
+                re, ce = self.busca_reina()
+                h = abs(1 - re) + abs(5 - ce)
+            case _:
+                print("Ficha no encontrada")
+        print("Heuristica: ", h)
+        return h
+
+    def camino_corto(self, meta):
+        lessHeur = 0
+        masCorto = None
+        cont = 0
+        for i in self.hijos:
+            if (cont == 0):
+                lessHeur = i.heuristica(meta)
+                masCorto = i
+            if(i.heuristica(meta) == 0):
+                print("Solucion encontrada")
+                i.state_print()
+                return
+            if(i.heuristica(meta) < lessHeur):
+                lessHeur = i.heuristica(meta)
+                masCorto = i
+            cont += 1
+        return masCorto.expand("_", meta)
 
     def busca_peon_del_rey(self, color):
         col = reg = 0
         for r in self.estado:
             for c in r:
                 if color == 'n':
-                    if c == "nP" and self.estado[reg - 1, col] == "nK":
-                        return (reg, col)
+                    if c == "nP":
+                        if self.estado[reg - 1][col] == "nK":
+                            return (reg, col)
                 else:
-                    if c == "bP" and self.estado[reg + 1, col] == "bK":
-                        return (reg, col)
+                    if c == "bP":
+                        if self.estado[reg + 1][col] == "bK":
+                            return (reg, col)
                 col += 1
             reg += 1
             col = 0
@@ -193,9 +240,8 @@ class Nodo(object):
         reg = col = 0
         for r in self.estado:
             for c in r:
-                if r == 0:
-                    if c == "nC":
-                        return (reg, col)
+                if c == "nC":
+                    return (reg, col)
                 col += 1
             reg += 1
             col = 0
@@ -272,4 +318,4 @@ class Nodo(object):
 #                     return (r, c)
 #             #     col += 1
 #             # reg += 1
-#         return (None, None)
+#         return (
