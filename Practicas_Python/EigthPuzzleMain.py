@@ -14,13 +14,19 @@ meta = [
     [7, 8, "_"]
 ]
 
-raiz = EigthPuzzle.Nodo(estado_inicial)
-nodoMeta = EigthPuzzle.Nodo(meta)
 visitados = []
+franja = []
 
-print("Heuristica:", raiz.heuristica(nodoMeta))
+raiz = EigthPuzzle.Nodo(estado_inicial)
+nodo_meta = EigthPuzzle.Nodo(meta)
+
+print("Heuristica:", raiz.heuristica(nodo_meta))
 print("Estado inicial")
 raiz.imprime_estado()
 visitados.append(EigthPuzzle.Nodo(copy.deepcopy(raiz.estado)))
 
-raiz.expande("_", nodoMeta, visitados)
+raiz.expande("_", nodo_meta, franja, visitados)
+for i in franja:
+    i.imprime_estado()
+    print(i.heur)
+    print("==============")

@@ -14,37 +14,52 @@ class Nodo(object):
         self.heur = 0
         self.hijos = []
 
-    def expande(self, ficha, meta, visitados):
+    def expande(self, ficha, meta, franja, visitados):
         ren, col = self.busca_ficha(ficha)
         if (not ren or not col):
             return None
 
+        movimiento = None
         # generar arriba
         if (ren > 0):
             arriba = copy.deepcopy(self.estado)  # para copy valores y no la direccion de memoria
             arriba[ren - 1][col] = self.estado[ren][col]
             arriba[ren][col] = self.estado[ren - 1][col]
-            self.hijos.append(Nodo(arriba))
+            #self.hijos.append(Nodo(arriba))
+            movimiento = Nodo(arriba)
+            movimiento.heuristica(meta)
+            franja.append(movimiento)
         # generar derecha
         if (col < 2):
             derecha = copy.deepcopy(self.estado)
             derecha[ren][col + 1] = self.estado[ren][col]
             derecha[ren][col] = self.estado[ren][col + 1]
-            self.hijos.append(Nodo(derecha))
+            #self.hijos.append(Nodo(derecha))
+            movimiento = Nodo(derecha)
+            movimiento.heuristica(meta)
+            franja.append(movimiento)
         # generar abajo
         if (ren < 2):
             abajo = copy.deepcopy(self.estado)
             abajo[ren + 1][col] = self.estado[ren][col]
             abajo[ren][col] = self.estado[ren + 1][col]
-            self.hijos.append(Nodo(abajo))
+            #self.hijos.append(Nodo(abajo))
+            movimiento = Nodo(abajo)
+            movimiento.heuristica(meta)
+            franja.append(movimiento)
         # generar izquierda
         if (col > 0):
             izquierda = copy.deepcopy(self.estado)
             izquierda[ren][col - 1] = self.estado[ren][col]
             izquierda[ren][col] = self.estado[ren][col - 1]
-            self.hijos.append(Nodo(izquierda))
+            #self.hijos.append(Nodo(izquierda))
+            movimiento = Nodo(izquierda)
+            movimiento.heuristica(meta)
+            franja.append(movimiento)
 
-        self.camino_mas_corto(meta, visitados)
+        #self.camino_mas_corto(meta, visitados)
+        franja.sort(key=lambda x: x.heur)
+        #self.greedy_busqueda(meta, franja, visitados)
 
     def camino_mas_corto(self, meta, visitados):
         heur_actual = 0
@@ -58,7 +73,7 @@ class Nodo(object):
             for visitado in visitados:
                 if (numpy.array_equal(visitado.estado, hijo.estado)):
                     es_visitado = True
-
+            
             if not es_visitado:
                 heur_actual = hijo.heuristica(meta)
 
@@ -81,7 +96,11 @@ class Nodo(object):
         visitados.append(Nodo(copy.deepcopy(mas_corto.estado)))
         mas_corto.expande("_", meta, visitados)
     
-    def greedy_busqueda(self):
+    def greedy_busqueda(self, visitados, franja):
+        #if eres tu
+        #else
+        #expande a tus hijos
+        #atender a todos los de la franja mientras se va expandiendo
         pass
 
     def busca_ficha(self, ficha):
