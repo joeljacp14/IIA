@@ -80,6 +80,9 @@ class Nodo(object):
         #agregar este nodo a la lista de visitados
         visitados.append(Nodo(copy.deepcopy(mas_corto.estado)))
         mas_corto.expande("_", meta, visitados)
+    
+    def greedy_busqueda(self):
+        pass
 
     def busca_ficha(self, ficha):
         col = 0
@@ -106,10 +109,10 @@ class Nodo(object):
         for i in range(8):
             rm, cm = meta.busca_ficha(i + 1)
             re, ce = self.busca_ficha(i + 1)
-            sum += math.sqrt(math.pow((rm - re), 2)) + math.sqrt(math.pow((cm - ce), 2))
+            sum += abs(rm - re) + abs(cm - ce)
         rm, cm = meta.busca_ficha("_")
         re, ce = self.busca_ficha("_")
-        sum += math.sqrt(math.pow((rm - re), 2)) + math.sqrt(math.pow((cm - ce), 2))
+        sum += abs(rm - re) + abs(cm - ce)
         # print("Heuristica: ", sum)
         # self.imprime_estado()
         # print("=====================")
