@@ -28,5 +28,3 @@ visitados.append(EigthPuzzle.Nodo(copy.deepcopy(raiz.estado)))
 raiz.expande("_", nodo_meta, franja, visitados)
 for i in franja:
     i.imprime_estado()
-    print(i.heur)
-    print("==============")

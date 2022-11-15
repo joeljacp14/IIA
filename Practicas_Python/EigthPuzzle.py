@@ -96,12 +96,14 @@ class Nodo(object):
         visitados.append(Nodo(copy.deepcopy(mas_corto.estado)))
         mas_corto.expande("_", meta, visitados)
     
-    def greedy_busqueda(self, visitados, franja):
+    def greedy_busqueda(self, meta, visitados, franja):
         #if eres tu
         #else
         #expande a tus hijos
         #atender a todos los de la franja mientras se va expandiendo
-        pass
+        if numpy.array_equal(self.estado, meta.estado):
+            print("¡¡¡SOLUCION ENCONTRADA!!!")
+            self.imprime_estado()
 
     def busca_ficha(self, ficha):
         col = 0
@@ -120,7 +122,8 @@ class Nodo(object):
             for columna in renglon:
                 print(columna, end=" ")
             print(" ")
-        print(" ")
+        print("Heuristica:", self.heur)
+        print("=======================")
 
     def heuristica(self, meta):
         sum = 0
