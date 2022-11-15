@@ -104,6 +104,11 @@ class Nodo(object):
         if numpy.array_equal(self.estado, meta.estado):
             print("¡¡¡SOLUCION ENCONTRADA!!!")
             self.imprime_estado()
+        else:
+            self.expande("_", meta,)
+        self.greedy_busqueda()
+
+        # TERMINAR Y PROBAR ESTA FUNCION
 
     def busca_ficha(self, ficha):
         col = 0
@@ -135,9 +140,6 @@ class Nodo(object):
         rm, cm = meta.busca_ficha("_")
         re, ce = self.busca_ficha("_")
         sum += abs(rm - re) + abs(cm - ce)
-        # print("Heuristica: ", sum)
-        # self.imprime_estado()
-        # print("=====================")
         self.heur = sum
         return sum
 
