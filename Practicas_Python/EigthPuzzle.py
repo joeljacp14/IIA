@@ -14,7 +14,7 @@ class Nodo(object):
         self.heur = 0
         self.hijos = []
 
-    def expande(self, ficha, meta, franja, visitados): #expande y ordena con el metodo sort del objeto lista
+    def expande(self, ficha, meta, franja): #expande y ordena con el metodo sort del objeto lista
         ren, col = self.busca_ficha(ficha)
         if (not ren or not col):
             return None
@@ -61,9 +61,9 @@ class Nodo(object):
         franja.sort(key=lambda x: x.heur)
         #self.greedy_busqueda(meta, franja, visitados)
     
-    def expande_greedy(self, meta, visitados): #expande y ordena al insertar
+    def expande_greedy(self, meta, visitados, franja): #expande y ordena al insertar
         if not self in visitados:#****************#
-            self.expande()
+            self.expande("_", meta, franja)
             pos = 0
             for hijo in self.hijos:
                 for visitado in visitados:
@@ -113,8 +113,11 @@ class Nodo(object):
         if numpy.array_equal(self.estado, meta.estado):
             print("¡¡¡SOLUCION ENCONTRADA!!!")
             self.imprime_estado()
-        self.expande("_", meta,)
-        self.busqueda_greedy()
+            return
+        visitados.append(self)
+        self.expande("_", meta, franja)#o expande greedy, anyway
+        nodo = visitados.pop()
+        nodo.busqueda_greedy(meta, visitados, franja)
 
         # TERMINAR Y PROBAR ESTA FUNCION
 
@@ -141,9 +144,9 @@ class Nodo(object):
     def heuristica(self, meta):
         sum = 0
         re = ce = rm = cm = 0
-        for i in range(8):
-            rm, cm = meta.busca_ficha(i + 1)
-            re, ce = self.busca_ficha(i + 1)
+        for i in range(1, 8):
+            rm, cm = meta.busca_ficha(i)
+            re, ce = self.busca_ficha(i)
             sum += abs(rm - re) + abs(cm - ce)
         rm, cm = meta.busca_ficha("_")
         re, ce = self.busca_ficha("_")
