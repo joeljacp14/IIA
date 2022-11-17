@@ -14,58 +14,69 @@ class Nodo(object):
         self.heur = 0
         self.hijos = []
 
-    def expande(self, ficha, meta, franja, visitados):
+    def expande(self, ficha, meta, franja, visitados): #expande y ordena con el metodo sort del objeto lista
         ren, col = self.busca_ficha(ficha)
         if (not ren or not col):
             return None
 
         movimiento = None
-        # generar arriba
+        # movimiento arriba
         if (ren > 0):
             arriba = copy.deepcopy(self.estado)  # para copy valores y no la direccion de memoria
             arriba[ren - 1][col] = self.estado[ren][col]
             arriba[ren][col] = self.estado[ren - 1][col]
-            #self.hijos.append(Nodo(arriba))
             movimiento = Nodo(arriba)
             movimiento.heuristica(meta)
+            self.hijos.append(movimiento)
             franja.append(movimiento)
-        # generar derecha
+        # movimiento derecha
         if (col < 2):
             derecha = copy.deepcopy(self.estado)
             derecha[ren][col + 1] = self.estado[ren][col]
             derecha[ren][col] = self.estado[ren][col + 1]
-            #self.hijos.append(Nodo(derecha))
             movimiento = Nodo(derecha)
             movimiento.heuristica(meta)
+            self.hijos.append(movimiento)
             franja.append(movimiento)
-        # generar abajo
+        # movimiento abajo
         if (ren < 2):
             abajo = copy.deepcopy(self.estado)
             abajo[ren + 1][col] = self.estado[ren][col]
             abajo[ren][col] = self.estado[ren + 1][col]
-            #self.hijos.append(Nodo(abajo))
             movimiento = Nodo(abajo)
             movimiento.heuristica(meta)
+            self.hijos.append(movimiento)
             franja.append(movimiento)
-        # generar izquierda
+        # movimiento izquierda
         if (col > 0):
             izquierda = copy.deepcopy(self.estado)
             izquierda[ren][col - 1] = self.estado[ren][col]
             izquierda[ren][col] = self.estado[ren][col - 1]
-            #self.hijos.append(Nodo(izquierda))
             movimiento = Nodo(izquierda)
             movimiento.heuristica(meta)
+            self.hijos.append(movimiento)
             franja.append(movimiento)
 
         #self.camino_mas_corto(meta, visitados)
         franja.sort(key=lambda x: x.heur)
         #self.greedy_busqueda(meta, franja, visitados)
+    
+    def expande_greedy(self, meta, visitados): #expande y ordena al insertar
+        if not self in visitados:#****************#
+            self.expande()
+            pos = 0
+            for hijo in self.hijos:
+                for visitado in visitados:
+                    if hijo.heur < visitado.heur:
+                        visitados.insert(pos, hijo)
+                    if hijo.heur >= visitado.heur:
+                        visitados.insert(pos+1, hijo)
+                    pos += 1
 
     def camino_mas_corto(self, meta, visitados):
         heur_actual = 0
         heur_menor = 0
         mas_corto = None
-        cont = 0
         es_visitado = False
 
         for hijo in self.hijos:
@@ -90,13 +101,11 @@ class Nodo(object):
                         mas_corto = hijo
             
             es_visitado = False
-            #cont += 1
-
-        #agregar este nodo a la lista de visitados
+        
         visitados.append(Nodo(copy.deepcopy(mas_corto.estado)))
         mas_corto.expande("_", meta, visitados)
     
-    def greedy_busqueda(self, meta, visitados, franja):
+    def busqueda_greedy(self, meta, visitados, franja):
         #if eres tu
         #else
         #expande a tus hijos
@@ -104,9 +113,8 @@ class Nodo(object):
         if numpy.array_equal(self.estado, meta.estado):
             print("¡¡¡SOLUCION ENCONTRADA!!!")
             self.imprime_estado()
-        else:
-            self.expande("_", meta,)
-        self.greedy_busqueda()
+        self.expande("_", meta,)
+        self.busqueda_greedy()
 
         # TERMINAR Y PROBAR ESTA FUNCION
 
