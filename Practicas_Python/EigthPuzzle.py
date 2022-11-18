@@ -8,11 +8,12 @@ sys.setrecursionlimit(1000000)
 
 
 class Nodo(object):
-    def __init__(self, estado):
+    def __init__(self, estado, padre=None):
         super(Nodo, self).__init__()
         self.estado = estado
         self.heur = 0
         self.hijos = []
+        self.padre = padre
 
     def expande(self, ficha, meta, franja): #expande y ordena con el metodo sort del objeto lista
         ren, col = self.busca_ficha(ficha)
@@ -25,7 +26,7 @@ class Nodo(object):
             arriba = copy.deepcopy(self.estado)  # para copy valores y no la direccion de memoria
             arriba[ren - 1][col] = self.estado[ren][col]
             arriba[ren][col] = self.estado[ren - 1][col]
-            movimiento = Nodo(arriba)
+            movimiento = Nodo(arriba, self)
             movimiento.heuristica(meta)
             self.hijos.append(movimiento)
             franja.append(movimiento)
@@ -34,7 +35,7 @@ class Nodo(object):
             derecha = copy.deepcopy(self.estado)
             derecha[ren][col + 1] = self.estado[ren][col]
             derecha[ren][col] = self.estado[ren][col + 1]
-            movimiento = Nodo(derecha)
+            movimiento = Nodo(derecha, self)
             movimiento.heuristica(meta)
             self.hijos.append(movimiento)
             franja.append(movimiento)
@@ -43,7 +44,7 @@ class Nodo(object):
             abajo = copy.deepcopy(self.estado)
             abajo[ren + 1][col] = self.estado[ren][col]
             abajo[ren][col] = self.estado[ren + 1][col]
-            movimiento = Nodo(abajo)
+            movimiento = Nodo(abajo, self)
             movimiento.heuristica(meta)
             self.hijos.append(movimiento)
             franja.append(movimiento)
@@ -52,7 +53,7 @@ class Nodo(object):
             izquierda = copy.deepcopy(self.estado)
             izquierda[ren][col - 1] = self.estado[ren][col]
             izquierda[ren][col] = self.estado[ren][col - 1]
-            movimiento = Nodo(izquierda)
+            movimiento = Nodo(izquierda, self)
             movimiento.heuristica(meta)
             self.hijos.append(movimiento)
             franja.append(movimiento)
@@ -62,7 +63,7 @@ class Nodo(object):
         #self.greedy_busqueda(meta, franja, visitados)
     
     def expande_greedy(self, meta, visitados, franja): #expande y ordena al insertar
-        if not self in visitados:#****************#
+        if not self in visitados:
             self.expande("_", meta, franja)
             pos = 0
             for hijo in self.hijos:
@@ -113,11 +114,18 @@ class Nodo(object):
         if numpy.array_equal(self.estado, meta.estado):
             print("¡¡¡SOLUCION ENCONTRADA!!!")
             self.imprime_estado()
-            return
-        visitados.append(self)
+            return self
+        #visitados.append(self)
         self.expande("_", meta, franja)#o expande greedy, anyway
-        nodo = visitados.pop()
-        nodo.busqueda_greedy(meta, visitados, franja)
+        while not franja == []:
+            nodo = visitados.pop(0)
+            solucion = self.busqueda_greedy(meta, visitados, franja)
+            if solucion:
+                camino.append(solucion)
+                padre = solucion.padre
+                while(padre):
+                    camino.append(padre)
+                    padre = padre.padre
 
         # TERMINAR Y PROBAR ESTA FUNCION
 

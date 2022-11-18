@@ -16,7 +16,6 @@ meta = [
 
 visitados = []
 franja = []
-
 raiz = EigthPuzzle.Nodo(estado_inicial)
 nodo_meta = EigthPuzzle.Nodo(meta)
 
@@ -28,3 +27,6 @@ visitados.append(EigthPuzzle.Nodo(copy.deepcopy(raiz.estado)))
 raiz.expande("_", nodo_meta, franja, visitados)
 for i in franja:
     i.imprime_estado()
+
+# IMPORTANTE!!!!
+# despues de encontrar la solucion agregar esos d¿nodos a la lista "camino"
