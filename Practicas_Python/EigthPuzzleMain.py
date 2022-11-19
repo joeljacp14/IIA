@@ -16,17 +16,17 @@ meta = [
 
 visitados = []
 franja = []
+camino = []
+
 raiz = EigthPuzzle.Nodo(estado_inicial)
 nodo_meta = EigthPuzzle.Nodo(meta)
 
 print("Heuristica:", raiz.heuristica(nodo_meta))
 print("Estado inicial")
 raiz.imprime_estado()
-visitados.append(EigthPuzzle.Nodo(copy.deepcopy(raiz.estado)))
+#visitados.append(EigthPuzzle.Nodo(copy.deepcopy(raiz.estado)))
 
-raiz.expande("_", nodo_meta, franja, visitados)
-for i in franja:
+#raiz.expande("_", nodo_meta, franja, visitados)
+raiz.busqueda_greedy(nodo_meta, visitados, franja, camino)
+for i in camino:
     i.imprime_estado()
-
-# IMPORTANTE!!!!
-# despues de encontrar la solucion agregar esos d¿nodos a la lista "camino"

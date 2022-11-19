@@ -70,9 +70,74 @@ class Nodo(object):
                 for visitado in visitados:
                     if hijo.heur < visitado.heur:
                         visitados.insert(pos, hijo)
-                    if hijo.heur >= visitado.heur:
-                        visitados.insert(pos+1, hijo)
+                        break
                     pos += 1
+            visitados.insert(pos+1, hijo)
+    
+    def busqueda_greedy(self, meta, visitados, franja, camino):
+        #if eres tu
+        #else
+        #expande a tus hijos
+        #atender a todos los de la franja mientras se va expandiendo
+        if numpy.array_equal(self.estado, meta.estado):
+            print("¡¡¡SOLUCION ENCONTRADA!!!")
+            self.imprime_estado()
+            return self
+        for visitado in visitados:
+            if numpy.array_equal(self.estado, visitado.estado):
+                return None
+
+        visitados.append(self)
+        self.expande("_", meta, franja)#o expande greedy, anyway
+        while not franja == []:
+            frente = visitados.pop(0)
+            solucion = frente.busqueda_greedy(meta, visitados, franja, camino)#frente
+            if solucion:
+                camino.append(solucion)
+                padre = solucion.padre
+                while(padre):
+                    camino.append(padre)
+                    padre = padre.padre
+                break
+        
+        if franja == []:
+            print("No hay solucion :(((")
+        return None
+
+        # PROBAR ESTA FUNCION
+
+    def heuristica(self, meta):
+        sum = 0
+        re = ce = rm = cm = 0
+        for i in range(1, 8):
+            rm, cm = meta.busca_ficha(i)
+            re, ce = self.busca_ficha(i)
+            sum += abs(rm - re) + abs(cm - ce)
+        rm, cm = meta.busca_ficha("_")
+        re, ce = self.busca_ficha("_")
+        sum += abs(rm - re) + abs(cm - ce)
+        self.heur = sum
+        return sum
+    
+    def busca_ficha(self, ficha):
+        col = 0
+        reg = 0
+        for renglon in self.estado:
+            for columna in renglon:
+                if columna == ficha:
+                    return (reg, col)
+                col = col + 1
+            reg = reg + 1
+            col = 0
+        return (None, None)
+
+    def imprime_estado(self):
+        for renglon in self.estado:
+            for columna in renglon:
+                print(columna, end=" ")
+            print(" ")
+        print("Heuristica:", self.heur)
+        print("=======================")
 
     def camino_mas_corto(self, meta, visitados):
         heur_actual = 0
@@ -105,60 +170,4 @@ class Nodo(object):
         
         visitados.append(Nodo(copy.deepcopy(mas_corto.estado)))
         mas_corto.expande("_", meta, visitados)
-    
-    def busqueda_greedy(self, meta, visitados, franja):
-        #if eres tu
-        #else
-        #expande a tus hijos
-        #atender a todos los de la franja mientras se va expandiendo
-        if numpy.array_equal(self.estado, meta.estado):
-            print("¡¡¡SOLUCION ENCONTRADA!!!")
-            self.imprime_estado()
-            return self
-        #visitados.append(self)
-        self.expande("_", meta, franja)#o expande greedy, anyway
-        while not franja == []:
-            nodo = visitados.pop(0)
-            solucion = self.busqueda_greedy(meta, visitados, franja)
-            if solucion:
-                camino.append(solucion)
-                padre = solucion.padre
-                while(padre):
-                    camino.append(padre)
-                    padre = padre.padre
-
-        # TERMINAR Y PROBAR ESTA FUNCION
-
-    def busca_ficha(self, ficha):
-        col = 0
-        reg = 0
-        for renglon in self.estado:
-            for columna in renglon:
-                if columna == ficha:
-                    return (reg, col)
-                col = col + 1
-            reg = reg + 1
-            col = 0
-        return (None, None)
-
-    def imprime_estado(self):
-        for renglon in self.estado:
-            for columna in renglon:
-                print(columna, end=" ")
-            print(" ")
-        print("Heuristica:", self.heur)
-        print("=======================")
-
-    def heuristica(self, meta):
-        sum = 0
-        re = ce = rm = cm = 0
-        for i in range(1, 8):
-            rm, cm = meta.busca_ficha(i)
-            re, ce = self.busca_ficha(i)
-            sum += abs(rm - re) + abs(cm - ce)
-        rm, cm = meta.busca_ficha("_")
-        re, ce = self.busca_ficha("_")
-        sum += abs(rm - re) + abs(cm - ce)
-        self.heur = sum
-        return sum
 
