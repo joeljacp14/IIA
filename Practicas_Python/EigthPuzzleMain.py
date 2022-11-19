@@ -20,6 +20,7 @@ camino = []
 
 raiz = EigthPuzzle.Nodo(estado_inicial)
 nodo_meta = EigthPuzzle.Nodo(meta)
+raiz.heuristica(nodo_meta)
 
 print("Estado inicial")
 raiz.imprime_estado()

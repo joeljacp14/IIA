@@ -58,7 +58,6 @@ class Nodo(object):
         for hijo in self.hijos:
             franja.append(hijo)
         franja.sort(key=lambda x: x.heur)
-        #self.greedy_busqueda(meta, franja, visitados)
     
     def expande_greedy(self, meta, visitados, franja): #expande y ordena al insertar
         if not self in visitados:
@@ -74,25 +73,29 @@ class Nodo(object):
     
     def busqueda_greedy(self, meta, visitados, franja, camino):
         #if eres tu
+        #
+        # if es visitado
         #else
         #expande a tus hijos
         #atender a todos los de la franja mientras se va expandiendo
 
-        self.imprime_estado()
-        if numpy.array_equal(self.estado, meta.estado):
+        #self.imprime_estado()
+        if self.heur == 0:
             print("¡¡¡SOLUCION ENCONTRADA!!!")
             self.imprime_estado()
             return self
 
-        if not visitados == []:
-            for visitado in visitados:
-                if numpy.array_equal(self.estado, visitado.estado):
-                    return None
+        for visitado in visitados:
+            if numpy.array_equal(self.estado, visitado.estado):
+                return None
 
         visitados.append(self)
-        self.expande("_", meta, franja)#o expande greedy, anyway
+        self.expande("_", meta, franja)
+
         while not franja == []:
             frente = franja.pop(0)
+            print("Se atiende a:")
+            frente.imprime_estado()
             solucion = frente.busqueda_greedy(meta, visitados, franja, camino)
             if solucion:
                 camino.append(solucion)
