@@ -78,12 +78,13 @@ class Nodo():
                 visitados.append([primero.posx, primero.posy])
 
                 primero.expande()
-                
+
+                #en este ciclo se ordenan los hijos, lo mismo que hago con sort xdd
                 for hijo in primero.hijos:
                     print(hijo.posx, hijo.posy)
                     if franja == []:
                         franja.append(hijo)
-                    else:    
+                    else:
                         for pos, n in enumerate(franja):
                             print("=====")
                             print(pos, n.posx, n.posy)
@@ -92,7 +93,8 @@ class Nodo():
                                 print(pos, n.posx, n.posy)
                                 franja.insert(pos, hijo)
                                 break
-        return None    
+        #---termina ciclo while----
+        return None
 
 
 ##  MAIN    ##

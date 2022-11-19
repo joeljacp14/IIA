@@ -92,18 +92,17 @@ class Nodo(object):
         visitados.append(self)
         self.expande("_", meta, franja)
 
-        while not franja == []:
-            frente = franja.pop(0)
-            print("Se atiende a:")
-            frente.imprime_estado()
-            solucion = frente.busqueda_greedy(meta, visitados, franja, camino)
-            if solucion:
-                camino.append(solucion)
-                padre = solucion.padre
-                while(padre):
-                    camino.append(padre)
-                    padre = padre.padre
-                break
+        frente = franja.pop(0)
+        print("Se atiende a:")
+        frente.imprime_estado()
+        solucion = frente.busqueda_greedy(meta, visitados, franja, camino)
+        if solucion:
+            camino.append(solucion)
+            padre = solucion.padre
+            while(padre):
+                camino.append(padre)
+                padre = padre.padre
+            #break
         
         return
 
