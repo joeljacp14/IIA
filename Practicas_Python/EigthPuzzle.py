@@ -29,7 +29,6 @@ class Nodo(object):
             movimiento = Nodo(arriba, self)
             movimiento.heuristica(meta)
             self.hijos.append(movimiento)
-            franja.append(movimiento)
         # movimiento derecha
         if (col < 2):
             derecha = copy.deepcopy(self.estado)
@@ -38,7 +37,6 @@ class Nodo(object):
             movimiento = Nodo(derecha, self)
             movimiento.heuristica(meta)
             self.hijos.append(movimiento)
-            franja.append(movimiento)
         # movimiento abajo
         if (ren < 2):
             abajo = copy.deepcopy(self.estado)
@@ -47,7 +45,6 @@ class Nodo(object):
             movimiento = Nodo(abajo, self)
             movimiento.heuristica(meta)
             self.hijos.append(movimiento)
-            franja.append(movimiento)
         # movimiento izquierda
         if (col > 0):
             izquierda = copy.deepcopy(self.estado)
@@ -56,9 +53,10 @@ class Nodo(object):
             movimiento = Nodo(izquierda, self)
             movimiento.heuristica(meta)
             self.hijos.append(movimiento)
-            franja.append(movimiento)
 
         #self.camino_mas_corto(meta, visitados)
+        for hijo in self.hijos:
+            franja.append(hijo)
         franja.sort(key=lambda x: x.heur)
         #self.greedy_busqueda(meta, franja, visitados)
     
@@ -79,19 +77,23 @@ class Nodo(object):
         #else
         #expande a tus hijos
         #atender a todos los de la franja mientras se va expandiendo
+
+        self.imprime_estado()
         if numpy.array_equal(self.estado, meta.estado):
             print("¡¡¡SOLUCION ENCONTRADA!!!")
             self.imprime_estado()
             return self
-        for visitado in visitados:
-            if numpy.array_equal(self.estado, visitado.estado):
-                return None
+
+        if not visitados == []:
+            for visitado in visitados:
+                if numpy.array_equal(self.estado, visitado.estado):
+                    return None
 
         visitados.append(self)
         self.expande("_", meta, franja)#o expande greedy, anyway
         while not franja == []:
-            frente = visitados.pop(0)
-            solucion = frente.busqueda_greedy(meta, visitados, franja, camino)#frente
+            frente = franja.pop(0)
+            solucion = frente.busqueda_greedy(meta, visitados, franja, camino)
             if solucion:
                 camino.append(solucion)
                 padre = solucion.padre
@@ -100,9 +102,7 @@ class Nodo(object):
                     padre = padre.padre
                 break
         
-        if franja == []:
-            print("No hay solucion :(((")
-        return None
+        return
 
         # PROBAR ESTA FUNCION
 
