@@ -25,6 +25,6 @@ raiz.heuristica(nodo_meta)
 print("Estado inicial")
 raiz.imprime_estado()
 
-raiz.busqueda_greedy(nodo_meta, visitados, franja, camino)
+camino = raiz.greedy_marin(nodo_meta, visitados, franja)
 for i in camino:
     i.imprime_estado()

@@ -1,11 +1,24 @@
-from mimetypes import init
 import copy
-import math
 import sys
+
 import numpy
 
-sys.setrecursionlimit(1000000)
+sys.setrecursionlimit(10000)
 
+estado_inicial = [
+    [7, 1, 6],
+    [4, "_", 8],
+    [3, 5, 2]
+]
+
+meta = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, "_"]
+]
+
+visitados = []
+franja = []
 
 class Nodo(object):
     def __init__(self, estado, padre=None):
@@ -15,7 +28,7 @@ class Nodo(object):
         self.hijos = []
         self.padre = padre
 
-    def expande(self, ficha, meta, franja): #expande y ordena con el metodo sort del objeto lista
+    def expande_hijos(self, ficha, meta): #expande y ordena con el metodo sort del objeto lista
         ren, col = self.busca_ficha(ficha)
         if (not ren or not col):
             return None
@@ -55,58 +68,98 @@ class Nodo(object):
             self.hijos.append(movimiento)
 
         #self.camino_mas_corto(meta, visitados)
+    
+    def expande_greedy(self, meta): #expande y ordena al insertar
+        if self.estado == meta.estado:
+            return self
+        for visitado in visitados:
+            if self.estado == visitado.estado:
+                return None
+        visitados.append(self)
+        self.expande_hijos("_", meta)#si da error, ordenar a patin
         for hijo in self.hijos:
             franja.append(hijo)
         franja.sort(key=lambda x: x.heur)
-    
-    def expande_greedy(self, meta, visitados, franja): #expande y ordena al insertar
-        if not self in visitados:
-            self.expande("_", meta, franja)
-            pos = 0
-            for hijo in self.hijos:
-                for visitado in visitados:
-                    if hijo.heur < visitado.heur:
-                        visitados.insert(pos, hijo)
-                        break
-                    pos += 1
-            visitados.insert(pos+1, hijo)
+        return None
     
     def busqueda_greedy(self, meta, visitados, franja, camino):
         #if eres tu
-        #
         # if es visitado
         #else
         #expande a tus hijos
         #atender a todos los de la franja mientras se va expandiendo
+        franja.append(self)
 
-        #self.imprime_estado()
-        if self.heur == 0:
+        while not franja == []:
+            frente = franja.pop(0)
+            print("Se atiende a:")
+            frente.imprime_estado()
+
+            if frente.estado == meta.estado:
+                print("¡¡¡SOLUCION ENCONTRADA!!!")
+                frente.imprime_estado()
+                camino.append(frente)
+                padre = frente.padre
+                while padre:
+                    camino.append(padre)
+                    padre = padre.padre
+                return
+
+            es_visitado = False
+            for visitado in visitados:
+                if numpy.array_equal(frente.estado, visitado.estado):
+                    es_visitado = True
+                    break
+            if not es_visitado:
+                visitados.append(frente)
+                frente.expande_hijos("_", meta, franja)
+        
+        return None
+
+    def greedy_recursivo(self, meta, visitados, franja, camino):
+        print("Se antiende")
+        self.imprime_estado()
+        if numpy.array_equal(self.estado, meta.estado):
             print("¡¡¡SOLUCION ENCONTRADA!!!")
             self.imprime_estado()
-            return self
-
-        for visitado in visitados:
-            if numpy.array_equal(self.estado, visitado.estado):
-                return None
-
-        visitados.append(self)
-        self.expande("_", meta, franja)
-
-        frente = franja.pop(0)
-        print("Se atiende a:")
-        frente.imprime_estado()
-        solucion = frente.busqueda_greedy(meta, visitados, franja, camino)
-        if solucion:
-            camino.append(solucion)
-            padre = solucion.padre
-            while(padre):
+            camino.append(self)
+            padre = self.padre
+            while padre:
                 camino.append(padre)
                 padre = padre.padre
-            #break
-        
-        return
+            return
 
-        # PROBAR ESTA FUNCION
+        es_visitado = False
+        if not visitados == []:
+            for visitado in visitados:
+                if numpy.array_equal(self.estado, visitado.estado):
+                    es_visitado = True
+
+        if not es_visitado:
+            visitados.append(self)
+            self.expande_hijos("_", meta, franja)
+
+        if not franja == []:
+            return franja.pop(0).greedy_recursivo(meta, visitados, franja, camino)
+
+        #return
+
+    def greedy_marin(self, meta):
+        camino = []
+        franja.append(self)
+        while not franja == []:
+            frente = franja.pop(0)
+            print("Se atiende a:---------")
+            frente.imprime_estado()
+            solucion = frente.expande_greedy(meta)
+            if solucion:
+                camino.append(solucion)
+                padre = solucion.padre
+                while padre:
+                    camino.append(padre)
+                    padre = padre.padre
+                return camino
+        return None
 
     def heuristica(self, meta):
         sum = 0
@@ -173,3 +226,15 @@ class Nodo(object):
         visitados.append(Nodo(copy.deepcopy(mas_corto.estado)))
         mas_corto.expande("_", meta, visitados)
 
+# ******* main *********
+raiz = Nodo(estado_inicial)
+nodo_meta = Nodo(meta)
+raiz.heuristica(nodo_meta)
+
+print("Estado inicial")
+raiz.imprime_estado()
+
+camino = raiz.greedy_marin(nodo_meta)
+print("El camino a la solucion es: ")
+for i in camino:
+    i.imprime_estado()
