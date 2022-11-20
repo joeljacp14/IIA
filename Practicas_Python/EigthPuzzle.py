@@ -5,21 +5,6 @@ import numpy
 
 sys.setrecursionlimit(10000)
 
-estado_inicial = [
-    [7, 1, 6],
-    [4, "_", 8],
-    [3, 5, 2]
-]
-
-meta = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, "_"]
-]
-
-visitados = []
-franja = []
-
 class Nodo(object):
     def __init__(self, estado, padre=None):
         super(Nodo, self).__init__()
@@ -27,9 +12,42 @@ class Nodo(object):
         self.heur = 0
         self.hijos = []
         self.padre = padre
+    
+    def imprime_estado(self):
+        for renglon in self.estado:
+            for columna in renglon:
+                print(columna, end=" ")
+            print(" ")
+        print("Heuristica:", self.heur)
+        print("=======================")
 
-    def expande_hijos(self, ficha, meta): #expande y ordena con el metodo sort del objeto lista
-        ren, col = self.busca_ficha(ficha)
+    def busca_ficha(self, ficha):
+        col = 0
+        reg = 0
+        for renglon in self.estado:
+            for columna in renglon:
+                if columna == ficha:
+                    return (reg, col)
+                col = col + 1
+            reg = reg + 1
+            col = 0
+        return (None, None)
+
+    def heuristica(self, meta):
+        sum = 0
+        re = ce = rm = cm = 0
+        for i in range(1, 8):
+            rm, cm = meta.busca_ficha(i)
+            re, ce = self.busca_ficha(i)
+            sum += abs(rm - re) + abs(cm - ce)
+        rm, cm = meta.busca_ficha("_")
+        re, ce = self.busca_ficha("_")
+        sum += abs(rm - re) + abs(cm - ce)
+        self.heur = sum
+        return sum
+
+    def expande_hijos(self, meta, franja): #expande y ordena con el metodo sort del objeto lista
+        ren, col = self.busca_ficha("_")
         if (not ren or not col):
             return None
 
@@ -66,23 +84,24 @@ class Nodo(object):
             movimiento = Nodo(izquierda, self)
             movimiento.heuristica(meta)
             self.hijos.append(movimiento)
+        
+        for hijo in self.hijos:
+            franja.append(hijo)
+        franja.sort(key=lambda x: x.heur)
 
         #self.camino_mas_corto(meta, visitados)
     
-    def expande_greedy(self, meta): #expande y ordena al insertar
+    def expande_greedy(self, meta, visitados, franja): #expande
         if self.estado == meta.estado:
             return self
         for visitado in visitados:
             if self.estado == visitado.estado:
                 return None
         visitados.append(self)
-        self.expande_hijos("_", meta)#si da error, ordenar a patin
-        for hijo in self.hijos:
-            franja.append(hijo)
-        franja.sort(key=lambda x: x.heur)
+        self.expande_hijos(meta, franja)
         return None
     
-    def busqueda_greedy(self, meta, visitados, franja, camino):
+    def busqueda_greedy(self, meta, visitados, franja):
         #if eres tu
         # if es visitado
         #else
@@ -98,60 +117,65 @@ class Nodo(object):
             if frente.estado == meta.estado:
                 print("¡¡¡SOLUCION ENCONTRADA!!!")
                 frente.imprime_estado()
+                camino = []
                 camino.append(frente)
                 padre = frente.padre
                 while padre:
                     camino.append(padre)
                     padre = padre.padre
-                return
+                return camino
 
             es_visitado = False
             for visitado in visitados:
                 if numpy.array_equal(frente.estado, visitado.estado):
                     es_visitado = True
-                    break
+
             if not es_visitado:
                 visitados.append(frente)
-                frente.expande_hijos("_", meta, franja)
+                frente.expande_hijos(meta, franja)
         
         return None
 
-    def greedy_recursivo(self, meta, visitados, franja, camino):
+    def greedy_recursivo(self, meta, visitados, franja):
         print("Se antiende")
         self.imprime_estado()
+
         if numpy.array_equal(self.estado, meta.estado):
             print("¡¡¡SOLUCION ENCONTRADA!!!")
             self.imprime_estado()
+            camino = []
             camino.append(self)
             padre = self.padre
             while padre:
                 camino.append(padre)
                 padre = padre.padre
-            return
+            return camino
 
         es_visitado = False
         if not visitados == []:
             for visitado in visitados:
                 if numpy.array_equal(self.estado, visitado.estado):
                     es_visitado = True
+                    break
 
         if not es_visitado:
             visitados.append(self)
-            self.expande_hijos("_", meta, franja)
+            self.expande_hijos(meta, franja)
 
         if not franja == []:
             return franja.pop(0).greedy_recursivo(meta, visitados, franja, camino)
+        else:
+            return None
 
-        #return
-
-    def greedy_marin(self, meta):
+    def greedy_marin(self, meta, visitados, franja):
         camino = []
         franja.append(self)
+
         while not franja == []:
             frente = franja.pop(0)
             print("Se atiende a:---------")
             frente.imprime_estado()
-            solucion = frente.expande_greedy(meta)
+            solucion = frente.expande_greedy(meta, visitados, franja)
             if solucion:
                 camino.append(solucion)
                 padre = solucion.padre
@@ -160,39 +184,35 @@ class Nodo(object):
                     padre = padre.padre
                 return camino
         return None
-
-    def heuristica(self, meta):
-        sum = 0
-        re = ce = rm = cm = 0
-        for i in range(1, 8):
-            rm, cm = meta.busca_ficha(i)
-            re, ce = self.busca_ficha(i)
-            sum += abs(rm - re) + abs(cm - ce)
-        rm, cm = meta.busca_ficha("_")
-        re, ce = self.busca_ficha("_")
-        sum += abs(rm - re) + abs(cm - ce)
-        self.heur = sum
-        return sum
     
-    def busca_ficha(self, ficha):
-        col = 0
-        reg = 0
-        for renglon in self.estado:
-            for columna in renglon:
-                if columna == ficha:
-                    return (reg, col)
-                col = col + 1
-            reg = reg + 1
-            col = 0
-        return (None, None)
+    def greedy_posgrado(self, meta, visitados, franja):
+        camino = []
+        franja.append(self)
 
-    def imprime_estado(self):
-        for renglon in self.estado:
-            for columna in renglon:
-                print(columna, end=" ")
-            print(" ")
-        print("Heuristica:", self.heur)
-        print("=======================")
+        while not franja == []:
+            frente = franja.pop(0)
+            print("----Se atiende a:----")
+            frente.imprime_estado()
+            if frente.estado == meta.estado:
+                print("Se encontro la solucion")
+                camino.append(frente)
+                padre = frente.padre
+                while padre:
+                    camino.append(padre)
+                    padre = padre.padre
+                return camino
+        
+            es_visitado = False
+            for visitado in visitados:
+                if frente.estado == visitado.estado:
+                    es_visitado = True
+                    break
+            
+            if not es_visitado:
+                visitados.append(frente)
+                frente.expande_hijos(meta, franja)
+        
+        return None
 
     def camino_mas_corto(self, meta, visitados):
         heur_actual = 0
@@ -227,14 +247,14 @@ class Nodo(object):
         mas_corto.expande("_", meta, visitados)
 
 # ******* main *********
-raiz = Nodo(estado_inicial)
-nodo_meta = Nodo(meta)
-raiz.heuristica(nodo_meta)
+# raiz = Nodo(estado_inicial)
+# nodo_meta = Nodo(meta)
+# raiz.heuristica(nodo_meta)
 
-print("Estado inicial")
-raiz.imprime_estado()
+# print("Estado inicial")
+# raiz.imprime_estado()
 
-camino = raiz.greedy_marin(nodo_meta)
-print("El camino a la solucion es: ")
-for i in camino:
-    i.imprime_estado()
+# camino = raiz.greedy_marin(nodo_meta)
+# print("El camino a la solucion es: ")
+# for i in camino:
+#     i.imprime_estado()
