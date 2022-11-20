@@ -163,7 +163,7 @@ class Nodo(object):
             self.expande_hijos(meta, franja)
 
         if not franja == []:
-            return franja.pop(0).greedy_recursivo(meta, visitados, franja, camino)
+            return franja.pop(0).greedy_recursivo(meta, visitados, franja)
         else:
             return None
 
