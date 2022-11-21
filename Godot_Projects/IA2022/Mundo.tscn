@@ -73,7 +73,7 @@ scale = Vector2( 0.126695, 0.125 )
 texture = ExtResource( 5 )
 
 [node name="RigidBody2D" type="RigidBody2D" parent="."]
-position = Vector2( 526, 74 )
+position = Vector2( -49, 207 )
 __meta__ = {
 "_edit_group_": true
 }
@@ -115,7 +115,7 @@ scale = Vector2( 0.1675, 0.163125 )
 texture = ExtResource( 8 )
 
 [node name="Cosa_4" type="KinematicBody2D" parent="."]
-position = Vector2( 28, 30 )
+position = Vector2( 64, 71 )
 script = ExtResource( 10 )
 __meta__ = {
 "_edit_group_": true
