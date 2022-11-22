@@ -16,7 +16,7 @@ class Nodo():
         self.posx = posx
         self.posy = posy
         self.hijos = []
-        self.padre = None
+        self.padre = padre
 
     def expande(self):
         if self.posy > 0:
@@ -56,17 +56,17 @@ class Nodo():
         #         if n.heuristica(metax, metay) > hijo.heuristica(metax, metay):
         #             franja.insert(pos, hijo)
         #             break
-        print(franja[0].posx, franja[0].posy)
+        # print(franja[0].posx, franja[0].posy)
         while not franja == []:
             primero = franja.pop(0)
-            print(primero.posx, primero.posy)
+            # print(primero.posx, primero.posy)
             if (primero.posx == metax) and (primero.posy == metay):
                 camino.append(primero)
                 papa = primero.padre
                 while papa:
                     camino.append(papa)
                     papa = papa.padre
-                    print("Te encontre!!!")
+                print("Te encontre!!!")
                 return camino
 
             es_visitado = False
@@ -78,31 +78,37 @@ class Nodo():
                 visitados.append([primero.posx, primero.posy])
 
                 primero.expande()
-
-                #en este ciclo se ordenan los hijos, lo mismo que hago con sort xdd
+                
                 for hijo in primero.hijos:
-                    print(hijo.posx, hijo.posy)
+                    # print(hijo.posx, hijo.posy)
                     if franja == []:
                         franja.append(hijo)
-                    else:
+                    else:    
                         for pos, n in enumerate(franja):
-                            print("=====")
-                            print(pos, n.posx, n.posy)
+                            # print("=====")
+                            # print(pos, n.posx, n.posy)
                             if n.heuristica(metax, metay) > hijo.heuristica(metax, metay):
-                                print("=====")
-                                print(pos, n.posx, n.posy)
+                                # print("=====")
+                                # print(pos, n.posx, n.posy)
                                 franja.insert(pos, hijo)
                                 break
-        #---termina ciclo while----
-        return None
+        return None    
 
 
 ##  MAIN    ##
 
 raiz = Nodo(2, 1)
 camino = raiz.greedy(2, 8)
+camino.reverse()
 
-print("El camino es:")
+print("Camino:")
 for i in camino:
-    print(i.posx, i.posy)
+    mapa[i.posx][i.posy] = '*'
+    # print(i.posx, i.posy)
+
+for i in range(len(mapa)):
+    for j in range(len(mapa[0])):
+        print(mapa[i][j], end="   ")
+    print("   ")   
+
 
