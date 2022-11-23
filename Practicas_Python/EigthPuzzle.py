@@ -86,8 +86,13 @@ class Nodo(object):
             self.hijos.append(movimiento)
         
         for hijo in self.hijos:
-            franja.append(hijo)
-        franja.sort(key=lambda x: x.heur)
+            f = hijo.heur
+            pos = 0
+            for nodo in franja:
+                if f < nodo.heur:
+                    break
+                pos += 1
+            franja.insert(pos, hijo)
 
         #self.camino_mas_corto(meta, visitados)
     
@@ -108,8 +113,9 @@ class Nodo(object):
         #expande a tus hijos
         #atender a todos los de la franja mientras se va expandiendo
         franja.append(self)
-
+        cont =0
         while not franja == []:
+            cont +=1
             frente = franja.pop(0)
             print("Se atiende a:")
             frente.imprime_estado()
@@ -133,7 +139,7 @@ class Nodo(object):
             if not es_visitado:
                 visitados.append(frente)
                 frente.expande_hijos(meta, franja)
-        
+        print("Total de nodos", cont)
         return None
 
     def greedy_recursivo(self, meta, visitados, franja):

@@ -8,6 +8,12 @@ estado_inicial = [
     [3, 5, 2]
 ]
 
+estado_meta = [
+    [7, 1, 6],
+    [4, 8, 2],
+    [3, 5, "_"]
+]
+
 meta = [
     [1, 2, 3],
     [4, 5, 6],
@@ -35,22 +41,4 @@ raiz.imprime_estado()
 
 print("Busqueda Greedy")
 camino = raiz.busqueda_greedy(nodo_meta, visitados, franja)
-imprime_camino(camino)
-
-visitados.clear()
-franja.clear()
-print("Greedy recursivo")
-camino = raiz.greedy_recursivo(nodo_meta, visitados, franja)
-imprime_camino(camino)
-
-visitados.clear()
-franja.clear()
-print("Greedy Marin")
-camino = raiz.greedy_marin(nodo_meta, visitados, franja)
-imprime_camino(camino)
-
-visitados.clear()
-franja.clear()
-print("Greedy posgrado")
-camino = raiz.greedy_posgrado(nodo_meta, visitados, franja)
 imprime_camino(camino)
