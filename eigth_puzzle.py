@@ -1,7 +1,7 @@
 import copy
 import math
-import sys
-sys.setrecursionlimit(2169)
+# import sys
+# sys.setrecursionlimit(2169)
 
 visited = []
 franja = []
@@ -23,6 +23,11 @@ class Puzzle:
         self.state = state
         self.parent = parent
         self.branches = []
+
+        if parent:
+            self.weight = parent.weight + 1
+        else:
+            self.weight = 0
 
     def is_goal(self, goal):
         return self.state == goal
@@ -56,6 +61,7 @@ class Puzzle:
             left[row][colum - 1] = self.state[row][colum]
             left[row][colum] = self.state[row][colum - 1]
             self.branches.append(Puzzle(left, self))
+        pass
 
 ##  Obtenemos la posicion donde se encuentra el espacio
     def get_position(self):
@@ -153,6 +159,8 @@ class Puzzle:
 # # Buscar en el primero de la franja        
 #         while not franja == []:
 #             first = franja.pop(0)
+#             # if first.state == goal:
+#             #     way.append(first)
 #             print("**", first.state)
 #             ret = first.greedy_expand(goal)
 #             if ret:
@@ -167,6 +175,8 @@ class Puzzle:
 #         return None
 
     def greedy_expand(self, goal):
+        if self.state == goal:
+            return self
         # si self esta en visitados
         # ya no expandimos y nos salimos
         for edo in visited:
@@ -205,13 +215,50 @@ class Puzzle:
             solution = self.greedy_expand(goal)
             if solution:
                 way.append(solution)
-                parent = solution
+                parent = solution.parent
                 while parent:
                     way.append(parent)
                     parent = parent.parent
                 return way
         return None
 
+    def f_n(self, goal):
+        return self.weight + self.heuristic(goal)
+
+    def astar_expand(self, goal):
+        if self.state == goal:
+            return self
+        for mat in visited:
+            if mat == self.state:
+                return None
+        visited.append(self.state)
+        self.expand()
+        #agregar a la franja los hijos ordenados por h
+        for branch in self.branches:
+            f = branch.f_n(goal)
+            pos = 0
+            for nodo in franja:
+                if f < nodo.f_n(goal):
+                    break
+                pos += 1
+            franja.insert(pos, branch)
+
+    def astar_search(self, goal):
+        way = []
+        franja.append(self)
+        #buscar en el primero de la franja
+        while not franja == []:
+            first = franja.pop(0)
+            print("**", first.state)
+            ret = first.astar_expand(goal)
+            if ret:
+                #regresar el camino
+                parent = ret.parent 
+                while parent:
+                    way.append(parent)
+                    parent = parent.parent
+                return way
+        return None
 
 
 
@@ -314,7 +361,11 @@ raiz2 = Puzzle(estado2)
 #     hijo.state_print()
     
 
-camino = raiz2.greedy_search(meta)
+# camino = raiz2.greedy_search(meta)
+# for i in camino:
+#     print(i.state)
+
+camino = raiz2.astar_search(meta)
 for i in camino:
     print(i.state)
 
