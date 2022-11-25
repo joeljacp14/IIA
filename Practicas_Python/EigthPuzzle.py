@@ -10,8 +10,13 @@ class Nodo(object):
         super(Nodo, self).__init__()
         self.estado = estado
         self.heur = 0
+        self.fn = 0
         self.hijos = []
         self.padre = padre
+        if padre:
+            self.peso = padre.peso + 1
+        else:
+            self.peso = 0
     
     def imprime_estado(self):
         for renglon in self.estado:
@@ -19,6 +24,7 @@ class Nodo(object):
                 print(columna, end=" ")
             print(" ")
         print("Heuristica:", self.heur)
+        print("Estimacion (f(n)):", self.fn)
         print("=======================")
 
     def busca_ficha(self, ficha):
@@ -44,14 +50,17 @@ class Nodo(object):
         re, ce = self.busca_ficha("_")
         sum += abs(rm - re) + abs(cm - ce)
         self.heur = sum
-        return sum
+        #return sum
+    
+    def f_n(self):
+        self.fn = self.peso + self.heur
 
     def expande_hijos(self, meta, franja): #expande y ordena con el metodo sort del objeto lista
         ren, col = self.busca_ficha("_")
         if (not ren or not col):
             return None
 
-        movimiento = None
+        #movimiento = None
         # movimiento arriba
         if (ren > 0):
             arriba = copy.deepcopy(self.estado)  # para copy valores y no la direccion de memoria
@@ -59,6 +68,7 @@ class Nodo(object):
             arriba[ren][col] = self.estado[ren - 1][col]
             movimiento = Nodo(arriba, self)
             movimiento.heuristica(meta)
+            movimiento.f_n()
             self.hijos.append(movimiento)
         # movimiento derecha
         if (col < 2):
@@ -67,6 +77,7 @@ class Nodo(object):
             derecha[ren][col] = self.estado[ren][col + 1]
             movimiento = Nodo(derecha, self)
             movimiento.heuristica(meta)
+            movimiento.f_n()
             self.hijos.append(movimiento)
         # movimiento abajo
         if (ren < 2):
@@ -75,6 +86,7 @@ class Nodo(object):
             abajo[ren][col] = self.estado[ren + 1][col]
             movimiento = Nodo(abajo, self)
             movimiento.heuristica(meta)
+            movimiento.f_n()
             self.hijos.append(movimiento)
         # movimiento izquierda
         if (col > 0):
@@ -83,18 +95,20 @@ class Nodo(object):
             izquierda[ren][col] = self.estado[ren][col - 1]
             movimiento = Nodo(izquierda, self)
             movimiento.heuristica(meta)
+            movimiento.f_n()
             self.hijos.append(movimiento)
-        
-        for hijo in self.hijos:
-            f = hijo.heur
-            pos = 0
-            for nodo in franja:
-                if f < nodo.heur:
-                    break
-                pos += 1
-            franja.insert(pos, hijo)
 
         #self.camino_mas_corto(meta, visitados)
+    
+    def ordena_greedy(self, franja):
+        for hijo in self.hijos:
+            franja.append(hijo)
+        franja.sort(key=lambda x: x.heur)
+    
+    def ordena_a_estrella(self, franja):
+        for hijo in self.hijos:
+            franja.append(hijo)
+        franja.sort(key=lambda x: x.fn)
     
     def expande_greedy(self, meta, visitados, franja): #expande
         if self.estado == meta.estado:
@@ -104,6 +118,7 @@ class Nodo(object):
                 return None
         visitados.append(self)
         self.expande_hijos(meta, franja)
+        self.ordena_greedy(franja)
         return None
     
     def busqueda_greedy(self, meta, visitados, franja):
@@ -139,6 +154,7 @@ class Nodo(object):
             if not es_visitado:
                 visitados.append(frente)
                 frente.expande_hijos(meta, franja)
+                frente.ordena_greedy(franja)
         print("Total de nodos", cont)
         return None
 
@@ -167,6 +183,7 @@ class Nodo(object):
         if not es_visitado:
             visitados.append(self)
             self.expande_hijos(meta, franja)
+            self.ordena_greedy(franja)
 
         if not franja == []:
             return franja.pop(0).greedy_recursivo(meta, visitados, franja)
@@ -217,8 +234,39 @@ class Nodo(object):
             if not es_visitado:
                 visitados.append(frente)
                 frente.expande_hijos(meta, franja)
+                frente.ordena_reedy(franja)
         
-        return None
+        #return None
+    
+    def a_estrella(self, meta, visitados, franja):
+        camino = []
+        franja.append(self)
+
+        cont = 0
+        while not franja == []:
+            frente = franja.pop(0)
+            print("Se atiende a:")
+            frente.imprime_estado()
+            #esta evaluacion el profe la hace en el metodo expande_astar()
+            if numpy.array_equal(frente.estado, meta.estado):
+                print("Se encontro la solucion")
+                frente.imprime_estado()
+                padre = frente.padre
+                while padre:
+                    camino.append(padre)
+                    padre = padre.padre
+                return camino
+            es_visitado = False
+            for visitado in visitados:
+                if numpy.array_equal(visitado.estado, frente.estado):
+                    es_visitado = True
+                    break
+            if not es_visitado:
+                visitados.append(frente)
+                frente.expande_hijos(meta, franja)
+                frente.ordena_a_estrella(franja)
+            cont += 1
+        print("Toral de nodos", cont)
 
     def camino_mas_corto(self, meta, visitados):
         heur_actual = 0
