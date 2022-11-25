@@ -33,7 +33,7 @@ visitados = []
 franja = []
 
 raiz = EigthPuzzle.Nodo(estado_inicial)
-nodo_meta = EigthPuzzle.Nodo(meta)
+nodo_meta = EigthPuzzle.Nodo(estado_meta)
 raiz.heuristica(nodo_meta)
 
 print("Estado inicial")
