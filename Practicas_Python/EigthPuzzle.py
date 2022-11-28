@@ -131,7 +131,9 @@ class Nodo(object):
         cont =0
         while not franja == []:
             cont +=1
-            frente = franja.pop(0)
+            estado = copy.deepcopy(franja.pop(0).estado)
+            frente = Nodo(estado)
+            #frente = franja.pop(0)
             print("Se atiende a:")
             frente.imprime_estado()
 
@@ -244,6 +246,8 @@ class Nodo(object):
 
         cont = 0
         while not franja == []:
+            #estado = copy.deepcopy(franja.pop(0).estado)
+            #frente = Nodo(estado)
             frente = franja.pop(0)
             print("Se atiende a:")
             frente.imprime_estado()

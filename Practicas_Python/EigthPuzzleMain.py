@@ -33,18 +33,18 @@ visitados = []
 franja = []
 
 raiz = EigthPuzzle.Nodo(estado_inicial)
-nodo_meta = EigthPuzzle.Nodo(estado_meta)
+nodo_meta = EigthPuzzle.Nodo(meta)
 raiz.heuristica(nodo_meta)
 
 print("Estado inicial")
 raiz.imprime_estado()
 
-print("Busqueda Greedy")
+print(">>>>>>>>>>> Busqueda Greedy <<<<<<<<<<<<<")
 camino = raiz.busqueda_greedy(nodo_meta, visitados, franja)
 imprime_camino(camino)
 
 visitados.clear()
 franja.clear()
-print("Busqueda A Estrella")
+print(">>>>>>>>>>> Busqueda A Estrella <<<<<<<<<<<<<")
 camino = raiz.a_estrella(nodo_meta, visitados, franja)
 imprime_camino(camino)
