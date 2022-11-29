@@ -1,7 +1,7 @@
 extends KinematicBody2D
 var pos = Vector2()
 var velocidad = 150
-onready var player = get_parent().get_node("Agente")
+onready var player = get_parent().get_node("PacMan")
 
 func _ready():
 	pass
