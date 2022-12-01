@@ -1,7 +1,16 @@
+#	Implementacion de el algoritmo Busqueda Primero en Anchura 
+#	(BFS / BPA)	Breadth First Search
 extends KinematicBody2D
+
+var camino = []
+onready var blue_ghost = $"../BlueGhost"
+onready var pacman = $"../PacMan"
+var ghost_position : Vector2
+var pacman_position : Vector2
+
 var pos = Vector2()
 var velocidad = 150
-onready var player = get_parent().get_node("PacMan")
+
 
 func _ready():
 	pass
@@ -15,8 +24,8 @@ func _ready():
 #		move_and_collide(pos)	
 
 func _process(delta):
-	pos.x = player.global_position.x - global_position.x
-	pos.y = player.global_position.y - global_position.y
+	pos.x = pacman.global_position.x - global_position.x
+	pos.y = pacman.global_position.y - global_position.y
 	print(pos)
 #
 	move_and_collide(pos.normalized() * velocidad * delta)
