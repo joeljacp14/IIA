@@ -26,6 +26,5 @@ func _ready():
 func _process(delta):
 	pos.x = pacman.global_position.x - global_position.x
 	pos.y = pacman.global_position.y - global_position.y
-	print(pos)
 #
 	move_and_collide(pos.normalized() * velocidad * delta)

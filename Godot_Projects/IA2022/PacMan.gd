@@ -9,14 +9,13 @@ var pos = Vector2()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	print("Arranca agente . . .")
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pos = Vector2()
 	var girar = 0
-	print("Entra al proceso . . .")
 	if Input.is_action_pressed("ui_right"):
 		pos.x = 200*delta
 #		girar += 1

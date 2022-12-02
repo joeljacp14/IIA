@@ -17,6 +17,5 @@ func _ready():
 func _process(delta):
 	pos.x = player.global_position.x - global_position.x
 	pos.y = player.global_position.y - global_position.y
-	print(pos)
 #
 	move_and_collide(pos.normalized() * velocidad * delta)
