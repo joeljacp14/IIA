@@ -1,6 +1,6 @@
 [gd_scene load_steps=20 format=2]
 
-[ext_resource path="res://GreedyNode.gd" type="Script" id=1]
+[ext_resource path="res://Algoritmos.gd" type="Script" id=1]
 [ext_resource path="res://PacMan.gd" type="Script" id=2]
 [ext_resource path="res://pacman.png" type="Texture" id=3]
 [ext_resource path="res://RedGhost.gd" type="Script" id=4]
