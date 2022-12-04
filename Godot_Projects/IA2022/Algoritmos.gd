@@ -40,8 +40,34 @@ class GreedyNode:
 		self.h = h
 	
 	func expand(goal):
-		#todo code here!
-		pass
+		var move
+		move = GreedyNode.new(0, -1)
+		move.heuristic(goal)
+		self.branches.append(move)
+		
+		move = GreedyNode.new(1, 0)
+		move.heuristic(goal)
+		self.branches.append(move)
+		
+		move = GreedyNode.new(0, 1)
+		move.heuristic(goal)
+		self.branches.append(move)
+		
+		move = GreedyNode.new(-1, 0)
+		move.heuristic(goal)
+		self.branches.append(move)
+		
+		for branch in self.branches:
+			if fringe == []:
+				fringe.append(branch)
+			else:
+				var pos = 0
+				for node in fringe:
+					if node.h > branch.h:
+						fringe.insert(pos, branch)
+						break
+					pos += 1
+		
 	
 	func search(goal):
 		if self.posx == goal.posx and self.posy == goal.posy:
@@ -54,7 +80,7 @@ class GreedyNode:
 			return way
 		
 		var is_visited = false
-		if not visits == []:
+		if not greedy_visits == []:
 			for visited in visits:
 				if self.posx == visited.posx and self.posy == visited.posy:
 					is_visited = true
@@ -62,4 +88,9 @@ class GreedyNode:
 		if not is_visited:
 			visits.append(self)
 			self.expand(goal)
+		
+		if not greedy_fringe == []:
+			return greedy_fringe.pop_front().search(goal)
+		else:
+			return null
 		
