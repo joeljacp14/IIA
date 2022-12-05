@@ -137,6 +137,9 @@ shape = SubResource( 4 )
 scale = Vector2( 0.0700521, 0.0694445 )
 texture = ExtResource( 7 )
 
+[node name="RayCast2D" type="RayCast2D" parent="BlueGhost"]
+cast_to = Vector2( 50, 0 )
+
 [node name="YellowGhost" type="KinematicBody2D" parent="."]
 position = Vector2( 149, 49 )
 script = ExtResource( 9 )
@@ -169,7 +172,7 @@ position = Vector2( -0.500002, 0.499999 )
 scale = Vector2( 0.0488281, 0.0488281 )
 texture = ExtResource( 11 )
 
-[node name="Maze" type="TileMap" parent="."]
+[node name="Obstaculos" type="TileMap" parent="."]
 modulate = Color( 0.65098, 0.0470588, 0.0470588, 1 )
 self_modulate = Color( 0.431373, 0.00392157, 0.00392157, 1 )
 tile_set = SubResource( 8 )
