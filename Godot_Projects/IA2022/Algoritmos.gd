@@ -1,11 +1,16 @@
 extends Node2D
 
+onready var tile_map = $"Obstaculos"
+onready var red_ghost = $"RedGhost" #greedy
+onready var blue_ghost = $"BlueGhost" #fuerza bruta
+onready var yellow_ghost = $"YellowGhost" #fuerzabruta
+onready var pink_ghost = $"PinkGhost" #a*
+onready var pacman = $"PacMan" #goal
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-var greedy_visits = []
-var greedy_fringe = []
+onready var greedy_visits = []
+onready var greedy_fringe = []
+onready var astar_visits = []
+onready var astar_fringe = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,13 +18,37 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	var tile_pos
+	var bfs_path
+	var dfs_path
+	var greedy_path
+	var astar_path
+	
+	tile_pos = tile_map.world_to_map(pacman.global_position)
+	var goal = Vector2(int(round(tile_pos.x)), int(round(tile_pos.y)))
+	
+	tile_pos = tile_map.world_to_map(red_ghost.global_position)
+	var greedy_root = GreedyNode.new(tile_pos.x, tile_pos.y)
+	greedy_path = greedy_root.search(goal, greedy_visits, greedy_fringe)
+	
+	if not greedy_path == null:
+		for pos in greedy_path:
+			pos.print_position()
+	
+
+class Goal: #unused xd
+	var posx
+	var posy
+	
+	func _init(posx, posy):
+		self.posx = posx
+		self.posy = posy
 
 class GreedyNode:
 	var posx
 	var posy
-	var h # is te heuristic value
+	var h # es el valor de la heuristica del nodo
 	var branches
 	var parent
 	
@@ -31,12 +60,11 @@ class GreedyNode:
 		self.parent = parent
 	
 	func print_position():
-		pass
-		#print("("self.posx"")
+		print("Pocision", self.posx, self.posy)
 	
-	func heuristic(goal, fringe):
+	func heuristic(goal):
 		var h = 0
-		h = abs(goal.posx - self.posx) + abs(goal.posy - self.posy)
+		h += abs(goal.x - self.posx) + abs(goal.y - self.posy)
 		self.h = h
 	
 	func expand(goal, fringe):
@@ -70,7 +98,8 @@ class GreedyNode:
 		
 	
 	func search(goal, visits, fringe):
-		if self.posx == goal.posx and self.posy == goal.posy:
+		if self.posx == goal.x and self.posy == goal.y:
+			# CONSIDERAR AGREGAR AL CAMINO SOLO VECTORES X, Y EN LUGAR DEL NODO
 			var way = []
 			way.append(self)
 			var parent = self.parent
@@ -90,7 +119,7 @@ class GreedyNode:
 			self.expand(goal, fringe)
 		
 		if not fringe == []:
-			return fringe.pop_front().search(goal)
+			return fringe.pop_front().search(goal, visits, fringe)
 		else:
 			return null
 		
