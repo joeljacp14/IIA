@@ -60,7 +60,7 @@ class GreedyNode:
 		self.parent = parent
 	
 	func print_position():
-		print("Pocision", self.posx, self.posy)
+		print("Posicion", self.posx, self.posy)
 	
 	func heuristic(goal):
 		var h = 0
@@ -98,6 +98,8 @@ class GreedyNode:
 		
 	
 	func search(goal, visits, fringe):
+		print("Se atiende")
+		self.print_position()
 		if self.posx == goal.x and self.posy == goal.y:
 			# CONSIDERAR AGREGAR AL CAMINO SOLO VECTORES X, Y EN LUGAR DEL NODO
 			var way = []
