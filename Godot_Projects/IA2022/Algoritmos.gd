@@ -1,10 +1,10 @@
 extends Node2D
 
 onready var tile_map = $"Obstaculos"
-onready var red_ghost = $"RedGhost" #greedy
-onready var blue_ghost = $"BlueGhost" #fuerza bruta
-onready var yellow_ghost = $"YellowGhost" #fuerzabruta
-onready var pink_ghost = $"PinkGhost" #a*
+onready var red_ghost = $"RedGhost" #Greedy
+#onready var blue_ghost = $"BlueGhost" #fuerza bruta	BFS
+onready var yellow_ghost = $"YellowGhost" #fuerzabruta	DFS
+onready var pink_ghost = $"PinkGhost" #A*
 onready var pacman = $"PacMan" #goal
 
 onready var greedy_visits = []
@@ -129,44 +129,44 @@ class GreedyNode:
 # Clase tipo arbol referente a la busqueda por anchura
 # Para este caso no hay heuritica que implementar, las expansiones son a la % $ @ # &
 
-class BFSNode:
-	var turns
-	var connections
-	var position
-	var branches
-	var parent
-	var queue = []
-	var visited = []
-
-	func _init(position, parent, turns, connections):
-		self.position = position
-		self.parent = parent
-		self.branches = []
-		self.turns = turns
-		self.connections = connections
-
-	func expand():
-		for item in connections[self.position]:
-			branches.append(BFSNode.new(item, self, self.turns, self.connections))
-
-	func is_goal(goal):
-		return self.position == goal
-
-	func get_way():
-		var way
-		if !self.parent:
-			return [self.position]
-		way = [self.position]
-		way.append_array(self.parent.get_way())
-		return way
-
-	func BFS(goal): #	Breadth First Search
-		queue.append(self)
-		for item in queue:
-			if item.is_goal(goal):
-				return item.get_way()
-			visited.append(item.position)
-			item.expand()
-			for branch in item.branches:
-				if not branch.position in visited:
-					queue.append(branch)
+#class BFSNode:
+#	var turns
+#	var connections
+#	var position
+#	var branches
+#	var parent
+#	var queue = []
+#	var visited = []
+#
+#	func _init(position, parent, turns, connections):
+#		self.position = position
+#		self.parent = parent
+#		self.branches = []
+#		self.turns = turns
+#		self.connections = connections
+#
+#	func expand():
+#		for item in connections[self.position]:
+#			branches.append(BFSNode.new(item, self, self.turns, self.connections))
+#
+#	func is_goal(goal):
+#		return self.position == goal
+#
+#	func get_way():
+#		var way
+#		if !self.parent:
+#			return [self.position]
+#		way = [self.position]
+#		way.append_array(self.parent.get_way())
+#		return way
+#
+#	func BFS(goal): #	Breadth First Search
+#		queue.append(self)
+#		for item in queue:
+#			if item.is_goal(goal):
+#				return item.get_way()
+#			visited.append(item.position)
+#			item.expand()
+#			for branch in item.branches:
+#				if not branch.position in visited:
+#					queue.append(branch)
