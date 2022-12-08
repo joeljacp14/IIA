@@ -1,5 +1,7 @@
 extends Node2D
 
+onready var speed = 45
+
 onready var tile_map = $"Obstaculos"
 onready var red_ghost = $"RedGhost" #Greedy
 #onready var blue_ghost = $"BlueGhost" #fuerza bruta	BFS
@@ -12,13 +14,13 @@ onready var greedy_fringe : Array = []
 onready var astar_visits = []
 onready var astar_fringe = []
 
+var greedy_path
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _ready():
 	var tile_pos
 	var bfs_path
 	var dfs_path
-	var greedy_path
 	var astar_path
 	
 	tile_pos = tile_map.world_to_map(pacman.global_position)
@@ -34,6 +36,12 @@ func _ready():
 		print("camino a la solucion")
 		for pos in greedy_path:
 			pos.print_position()
+	
+func _process(delta):
+	var red_ghost_init = red_ghost.global_position
+	if not greedy_path == []:
+		var goal = tile_map.map_to_world(Vector2(greedy_path[0].posx, greedy_path[0].posy)) + Vector2(32, 32)
+		red_ghost.global_position = lerp(red_ghost_init, goal, delta/speed)
 
 class GreedyNode:
 	var posx
@@ -106,6 +114,7 @@ class GreedyNode:
 			while parent:
 				way.append(parent)
 				parent = parent.parent
+			way.invert()
 			return way
 		
 		var is_visited = false
