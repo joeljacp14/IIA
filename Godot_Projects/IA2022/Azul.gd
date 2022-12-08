@@ -3,7 +3,7 @@
 extends Node2D
 
 var pos = Vector2()
-var velocidad = 3000
+var velocidad = 15000
 var camino = []
 onready var franja : Array = []
 onready var visitado : Array = []
@@ -124,14 +124,12 @@ func _process(delta):
 class BFSNode:
 	var posx
 	var posy
-	var h # es el valor de la heuristica del nodo
 	var branches
 	var parent
 	
 	func _init(posx, posy, parent = null):
 		self.posx = posx
 		self.posy = posy
-		self.h = 0
 		self.branches = []
 		self.parent = parent
 	
@@ -161,33 +159,64 @@ class BFSNode:
 #			fringe.push_in_back(branch)
 			fringe.append(branch)
 		
-	
 	func search(goal, visits, fringe, walls):
-		var way = []
-		print("Se atiende azul")
-		self.print_position()
-		if self.posx == goal.x and self.posy == goal.y:
-			print("SE ENCONTRO LA META!!!")
-			# CONSIDERAR AGREGAR AL CAMINO SOLO VECTORES X, Y EN LUGAR DEL NODO
-			way.append(self)
-			var parent = self.parent
-			print("Padre de la Solucion")
-			parent.print_position()
-			while parent:
-				way.append(parent)
-				parent = parent.parent
-			return way
-		
-		var is_visited = false
-		if not visits == []:
-			for visited in visits:
-				if self.posx == visited.posx and self.posy == visited.posy:
-					is_visited = true
+		var primero = []
+		while not fringe == []:
+			primero = fringe.pop_front()
+			if (primero.posx == goal.x) and (primero.posy == metay):
+#				if self.posx == goal.x and self.posy == goal.y:
+				camino.append(primero)
+				var papa = primero.padre
+				while papa:
+					camino.append(papa)
+					papa = papa.padre
+				print("Te encontre!!!")
+				return camino
+
+			es_visitado = false
+			for x, y in visits:
+				if (primero.posx == x) and (primero.posy == y):
+					es_visitado = true
 					break
-					
-		if not is_visited:
-			visits.append(self)
-			self.expand(goal, fringe, walls)
+			if not es_visitado:
+				visits.append([primero.posx, primero.posy])
+
+				primero.expande()
+
+				for hijo in primero.branches:
+					if fringe == []:
+						fringe.append(hijo)
+					else:
+						break
+		return []
 		
-		if not fringe == []:
-			return fringe.pop_front().search(goal, visits, fringe, walls)
+	
+#	func search(goal, visits, fringe, walls):
+#		var way = []
+#		print("Se atiende azul")
+#		self.print_position()
+#		if self.posx == goal.x and self.posy == goal.y:
+#			print("SE ENCONTRO LA META!!!")
+#			# CONSIDERAR AGREGAR AL CAMINO SOLO VECTORES X, Y EN LUGAR DEL NODO
+#			way.append(self)
+#			var parent = self.parent
+#			print("Padre de la Solucion")
+#			parent.print_position()
+#			while parent:
+#				way.append(parent)
+#				parent = parent.parent
+#			return way
+#
+#		var is_visited = false
+#		if not visits == []:
+#			for visited in visits:
+#				if self.posx == visited.posx and self.posy == visited.posy:
+#					is_visited = true
+#					break
+#
+#		if not is_visited:
+#			visits.append(self)
+#			self.expand(goal, fringe, walls)
+#
+#		if not fringe == []:
+#			return fringe.pop_front().search(goal, visits, fringe, walls)

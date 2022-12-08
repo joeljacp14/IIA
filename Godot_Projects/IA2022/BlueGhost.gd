@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 var pos = Vector2()
-var velocidad = 3000
+var velocidad = 12000
 onready var pacman = get_parent().get_parent().get_node("PacMan")
 
 #func _physics_process(delta):
