@@ -1,6 +1,6 @@
 extends Node2D
 
-onready var speed = 45
+onready var speed = 3000
 
 onready var tile_map = $"Obstaculos"
 onready var red_ghost = $"RedGhost" #Greedy
