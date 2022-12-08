@@ -161,6 +161,7 @@ class BFSNode:
 		
 	func search(goal, visits, fringe, walls):
 		var primero = []
+		fringe.append(self)
 		while not fringe == []:
 			primero = fringe.pop_front()
 			if (primero.posx == goal.x) and (primero.posy == metay):
