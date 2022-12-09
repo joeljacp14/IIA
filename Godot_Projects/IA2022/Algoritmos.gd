@@ -33,15 +33,21 @@ func _ready():
 	greedy_path = greedy_root.search(goal, greedy_visits, greedy_fringe, tile_map)
 	
 	if not greedy_path == null:
-		print("camino a la solucion")
+		print("camino en map")
 		for pos in greedy_path:
-			pos.print_position()
+			print("x: ", pos.x, " y: ", pos.y)
+			#convertir las coordenadas de tile 
+			#pos = tile_map.map_to_world(pos)
+		#print("Camino en world")
+		#for pos in greedy_path:
+			#print("x: ", pos.x, " y: ", pos.y)
+		red_ghost.way = greedy_path
 	
-func _process(delta):
-	var red_ghost_init = red_ghost.global_position
-	if not greedy_path == []:
-		var goal = tile_map.map_to_world(Vector2(greedy_path[0].posx, greedy_path[0].posy)) + Vector2(32, 32)
-		red_ghost.global_position = lerp(red_ghost_init, goal, delta/speed)
+#func _process(delta):
+#	var red_ghost_init = red_ghost.global_position
+#	if not greedy_path == []:
+#		var goal = tile_map.map_to_world(Vector2(greedy_path[0].x, greedy_path[0].y)) + Vector2(32, 32)
+#		red_ghost.global_position = lerp(red_ghost_init, goal, delta/speed)
 
 class GreedyNode:
 	var posx
@@ -61,9 +67,7 @@ class GreedyNode:
 		print("x: ", self.posx, ", y: ", self.posy)
 	
 	func heuristic(goal):
-		var h = 0
-		h += abs(goal.x - self.posx) + abs(goal.y - self.posy)
-		self.h = h
+		self.h = abs(goal.x - self.posx) + abs(goal.y - self.posy)
 	
 	func expand(goal, fringe, tile_map):
 		var move
@@ -100,19 +104,16 @@ class GreedyNode:
 					pos += 1
 		
 	
-	func search(goal, visits, fringe, tile_map):
+	func search(goal, visits, fringe, tile_map):# la busqueda greedy es totalmente recursiva
 		print("Se atiende")
 		self.print_position()
 		if self.posx == goal.x and self.posy == goal.y:
 			print("SE ENCONTRO LA META!!!")
-			# CONSIDERAR AGREGAR AL CAMINO SOLO VECTORES X, Y EN LUGAR DEL NODO
 			var way = []
-			way.append(self)
+			way.append(Vector2(self.posx, self.posy))
 			var parent = self.parent
-			print("padre de la sulocion")
-			parent.print_position()
 			while parent:
-				way.append(parent)
+				way.append(Vector2(parent.posx, parent.posy))
 				parent = parent.parent
 			way.invert()
 			return way
