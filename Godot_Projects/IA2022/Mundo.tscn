@@ -19,8 +19,7 @@
 [sub_resource type="CircleShape2D" id=7]
 radius = 11.3137
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 12, 12 )
+[sub_resource type="CircleShape2D" id=10]
 
 [sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 12, 12 )
@@ -106,14 +105,14 @@ exclude_parent = false
 cast_to = Vector2( 12, 0 )
 
 [node name="RedGhost" type="KinematicBody2D" parent="."]
-position = Vector2( 557, 48 )
+position = Vector2( 64, 64 )
 script = ExtResource( 4 )
 __meta__ = {
 "_edit_group_": true
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RedGhost"]
-shape = SubResource( 2 )
+shape = SubResource( 10 )
 
 [node name="Sprite" type="Sprite" parent="RedGhost"]
 scale = Vector2( 0.046875, 0.046875 )
@@ -165,7 +164,7 @@ script = ExtResource( 13 )
 script = ExtResource( 15 )
 
 [node name="BlueGhost" type="KinematicBody2D" parent="Azul"]
-position = Vector2( 48, 48 )
+position = Vector2( 48, 88 )
 script = ExtResource( 6 )
 __meta__ = {
 "_edit_group_": true

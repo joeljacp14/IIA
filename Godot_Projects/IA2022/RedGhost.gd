@@ -1,7 +1,8 @@
 extends KinematicBody2D
 
 var pos : Vector2
-var speed = 5
+var nodo : Vector2
+var speed = 50
 var way = []
 onready var player = get_parent().get_node("PacMan")
 onready var tile_map = get_parent().get_node("Obstaculos")
@@ -21,10 +22,26 @@ onready var tile_map = get_parent().get_node("Obstaculos")
 #	move_and_slide(pos.normalized() * velocidad * delta)
 
 func _process(delta):
+	pos.x = 0
+	pos.y = 0
+	move_and_slide(pos)
+	print(tile_map.map_to_world(Vector2(1, 1)))
 	if way == []:
 		print("Se termino el camino")
 		return
-	pos = tile_map.map_to_world(way.pop_front())
-	print(pos)
+	nodo = way.pop_front()
+	print("Nodo map ", nodo)
+	nodo = tile_map.map_to_world(nodo)
+	print("Nodo world", nodo)
+	print("Current position ", global_position)
+	if global_position.y == nodo.y:
+		pos.x = nodo.x * delta * speed
+		pos.y = 0
+	if global_position.x == nodo.x:
+		pos.x = 0
+		pos.y = nodo.y * delta * speed
+		
+	print("Moverse a ", pos)
+	print("====================================")
 	
-	move_and_slide(pos * delta * speed)
+	move_and_slide(pos)
