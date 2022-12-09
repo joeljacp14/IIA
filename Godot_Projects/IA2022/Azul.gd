@@ -1,5 +1,7 @@
 #	Implementacion de el algoritmo Busqueda Primero en Anchura 
 #	(BFS / BPA)	Breadth First Search
+
+# Estabamos usando clases anidadas inconsientemente u.u
 extends Node2D
 
 var pos = Vector2()
@@ -12,7 +14,9 @@ onready var walls = $"../Obstaculos"
 onready var pacman = $"../PacMan"
 onready var blue_ghost = $BlueGhost
 
-var bfs_path
+var outerblue = self
+
+var bfs_path = []
 
 #func _ready():
 #	pass
@@ -99,7 +103,7 @@ var bfs_path
 
 func _ready():
 	var tile_pos
-#	var bfs_path
+	var bfs_path
 	
 	tile_pos = walls.world_to_map(pacman.global_position)
 	print("PacMan: ", tile_pos.x, " ", tile_pos.y)
@@ -107,13 +111,13 @@ func _ready():
 	
 	tile_pos = walls.world_to_map(blue_ghost.global_position)
 	print("Blue Ghost: ", tile_pos.x, " ", tile_pos.y)
-	var bfs_root = BFSNode.new(tile_pos.x, tile_pos.y)
+	var bfs_root = BFSNode.new(tile_pos.x, tile_pos.y, self)
 	bfs_path = bfs_root.search(goal, visitado, franja, walls)
 	
 	if not bfs_path == null:
 		print("El camino es: ")
-		for pos in bfs_path:
-			pos.print_position()
+		for posi in bfs_path:
+			posi.print_position()
 			
 func _process(delta):
 	var blue_ghost_init = blue_ghost.global_position
@@ -126,11 +130,14 @@ class BFSNode:
 	var posy
 	var branches
 	var parent
+	var outerblue
+
 	
-	func _init(posx, posy, parent = null):
+	func _init(posx, posy, outerblue=null, parent = null):
 		self.posx = posx
 		self.posy = posy
 		self.branches = []
+		self.outerblue = outerblue
 		self.parent = parent
 	
 	func print_position():
@@ -159,65 +166,64 @@ class BFSNode:
 #			fringe.push_in_back(branch)
 			fringe.append(branch)
 		
-	func search(goal, visits, fringe, walls):
-		var primero = []
-		fringe.append(self)
-		while not fringe == []:
-			primero = fringe.pop_front()
-			if (primero.posx == goal.x) and (primero.posy == metay):
-#				if self.posx == goal.x and self.posy == goal.y:
-				camino.append(primero)
-				var papa = primero.padre
-				while papa:
-					camino.append(papa)
-					papa = papa.padre
-				print("Te encontre!!!")
-				return camino
-
-			es_visitado = false
-			for x, y in visits:
-				if (primero.posx == x) and (primero.posy == y):
-					es_visitado = true
-					break
-			if not es_visitado:
-				visits.append([primero.posx, primero.posy])
-
-				primero.expande()
-
-				for hijo in primero.branches:
-					if fringe == []:
-						fringe.append(hijo)
-					else:
-						break
-		return []
+#	func search(goal, visits, fringe, walls):
+#		var primero = []
+#		fringe.append(self)
+#		while not fringe == []:
+#			primero = fringe.pop_front()
+#			if (primero.posx == goal.x) and (primero.posy == goal.y):
+#				self.outerblue.camino.append(primero)
+#				var papa = primero.parent
+#				while papa:
+#					self.outerblue.camino.append(papa)
+#					papa = papa.parent
+#				print("Te encontre!!!")
+#				return self.outerblue.camino
+#
+#			es_visitado = false
+#			for x, y in visits:
+#				if (primero.posx == x) and (primero.posy == y):
+#					es_visitado = true
+#					break
+#			if not es_visitado:
+#				visits.append([primero.posx, primero.posy])
+#
+#				primero.expand()
+#
+#				for hijo in primero.branches:
+#					if fringe == []:
+#						fringe.append(hijo)
+#					else:
+#						break
+#		return []
 		
 	
-#	func search(goal, visits, fringe, walls):
-#		var way = []
-#		print("Se atiende azul")
-#		self.print_position()
-#		if self.posx == goal.x and self.posy == goal.y:
-#			print("SE ENCONTRO LA META!!!")
-#			# CONSIDERAR AGREGAR AL CAMINO SOLO VECTORES X, Y EN LUGAR DEL NODO
-#			way.append(self)
-#			var parent = self.parent
-#			print("Padre de la Solucion")
-#			parent.print_position()
-#			while parent:
-#				way.append(parent)
-#				parent = parent.parent
-#			return way
-#
-#		var is_visited = false
-#		if not visits == []:
-#			for visited in visits:
-#				if self.posx == visited.posx and self.posy == visited.posy:
-#					is_visited = true
-#					break
-#
-#		if not is_visited:
-#			visits.append(self)
-#			self.expand(goal, fringe, walls)
-#
-#		if not fringe == []:
-#			return fringe.pop_front().search(goal, visits, fringe, walls)
+	func search(goal, visits, fringe, walls):
+		var way = []
+		print("Se atiende azul")
+		self.print_position()
+		if self.posx == goal.x and self.posy == goal.y:
+			print("Te encontre!!!")
+			# CONSIDERAR AGREGAR AL CAMINO SOLO VECTORES X, Y EN LUGAR DEL NODO
+			way.append(self)
+			var parent = self.outerblue
+			print("Padre de la Solucion")
+			parent.print_position()
+			while parent:
+				way.append(parent)
+				parent = parent.parent
+			return way
+
+		var is_visited = false
+		if not visits == []:
+			for visited in visits:
+				if self.posx == visited.posx and self.posy == visited.posy:
+					is_visited = true
+					break
+
+		if not is_visited:
+			visits.append(self)
+			self.expand(goal, fringe, walls)
+
+		if not fringe == []:
+			return fringe.pop_front().search(goal, visits, fringe, walls)
