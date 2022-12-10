@@ -23,12 +23,12 @@ onready var tile_map = get_parent().get_node("Obstaculos")
 #	move_and_slide(pos.normalized() * velocidad * delta)
 
 func _process(delta):
-	pos.x = 0
-	pos.y = 0
+	#pos.x = 0
+	#pos.y = 0
 	#move_and_slide(pos)
-	var curren_position = global_position
-	print("Current position world: ", curren_position)
-	curren_position = tile_map.world_to_map(Vector2(int(round(curren_position.x)), int(round(curren_position.y))))
+	var curren_position_world = global_position
+	print("Current position world: ", curren_position_world)
+	var curren_position_map = tile_map.world_to_map(Vector2(int(round(curren_position_world.x)), int(round(curren_position_world.y))))
 	#curren_position = Vector2(int(round(curren_position.x)), int(round(curren_position.y)))
 	
 	if way == []:
@@ -41,16 +41,21 @@ func _process(delta):
 	
 	print("Nodo map ", nodo_map)
 	print("Nodo world centered", nodo_world)
-	print("Current position map: ", curren_position)
+	print("Current position map: ", curren_position_map)
 	
-	if curren_position.y == nodo_map.y:
-		pos.x = nodo_world.x
-		pos.y = 0
-	if curren_position.x == nodo_map.x:
+	if curren_position_map.x == nodo_map.x and curren_position_map.y == nodo_map.y:
 		pos.x = 0
-		pos.y = nodo_world.y
+		pos.y = 0
+	else:
+		if curren_position_map.y == nodo_map.y:
+			pos.x = nodo_world.x - curren_position_world.x 
+			pos.y = 0
+		if curren_position_map.x == nodo_map.x:
+			pos.x = 0
+			pos.y = nodo_world.y - curren_position_world.y
 	
-	print("Moverse a ", pos)
+	print("Se tiene que mover a -> ", pos)
 	print("====================================")
 	
 	move_and_slide(pos)
+	#move_toward(curren_position_world, nodo_world)

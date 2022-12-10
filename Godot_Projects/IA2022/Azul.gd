@@ -200,8 +200,7 @@ class BFSNode:
 	
 	func search(goal, visits, fringe, walls):
 		var way = []
-		print("Se atiende azul")
-		self.print_position()
+		#print("Se atiende azul: (", self.posx, ", ", self.posy, ")")
 		if self.posx == goal.x and self.posy == goal.y:
 			print("Te encontre!!!")
 			# CONSIDERAR AGREGAR AL CAMINO SOLO VECTORES X, Y EN LUGAR DEL NODO

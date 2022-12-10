@@ -105,8 +105,8 @@ class GreedyNode:
 		
 	
 	func search(goal, visits, fringe, tile_map):# la busqueda greedy es totalmente recursiva
-		print("Se atiende")
-		self.print_position()
+		#print("Se atiende")
+		#self.print_position()
 		if self.posx == goal.x and self.posy == goal.y:
 			print("SE ENCONTRO LA META!!!")
 			var way = []
