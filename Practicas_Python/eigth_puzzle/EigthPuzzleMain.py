@@ -1,6 +1,4 @@
-import copy
-
-import EigthPuzzle
+from Practicas_Python.eigth_puzzle import EigthPuzzle
 
 estado_inicial = [
     [7, 1, 6],
@@ -39,6 +37,14 @@ raiz.heuristica(nodo_meta)
 print("Estado inicial")
 raiz.imprime_estado()
 
+print(">>>>>> Busqueda Primero por Anchura <<<<<")
+
+visitados.clear()
+franja.clear()
+print(">>>>>> Busqueda Primero por Profundidad <<<<<")
+
+visitados.clear()
+franja.clear()
 print(">>>>>>>>>>> Busqueda Greedy <<<<<<<<<<<<<")
 camino = raiz.busqueda_greedy(nodo_meta, visitados, franja)
 imprime_camino(camino)

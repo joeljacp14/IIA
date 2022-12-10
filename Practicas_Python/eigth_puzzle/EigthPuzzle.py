@@ -97,8 +97,6 @@ class Nodo(object):
             movimiento.heuristica(meta)
             movimiento.f_n()
             self.hijos.append(movimiento)
-
-        #self.camino_mas_corto(meta, visitados)
     
     def ordena_greedy(self, franja):
         for hijo in self.hijos:
@@ -110,7 +108,7 @@ class Nodo(object):
             franja.append(hijo)
         franja.sort(key=lambda x: x.fn)
     
-    def expande_greedy(self, meta, visitados, franja): #expande
+    def expande_greedy(self, meta, visitados, franja): #evalua y expande
         if self.estado == meta.estado:
             return self
         for visitado in visitados:
@@ -192,7 +190,7 @@ class Nodo(object):
         else:
             return None
 
-    def greedy_marin(self, meta, visitados, franja):
+    def greedy_iia(self, meta, visitados, franja):
         camino = []
         franja.append(self)
 
@@ -251,7 +249,7 @@ class Nodo(object):
             frente = franja.pop(0)
             print("Se atiende a:")
             frente.imprime_estado()
-            #esta evaluacion el profe la hace en el metodo expande_astar()
+            #esta evaluacion el profe la hace en el metodo expande_astar(), el cual yo no tengo xdd
             if numpy.array_equal(frente.estado, meta.estado):
                 print("Se encontro la solucion")
                 frente.imprime_estado()
@@ -271,48 +269,3 @@ class Nodo(object):
                 frente.ordena_a_estrella(franja)
             cont += 1
         print("Toral de nodos", cont)
-
-    def camino_mas_corto(self, meta, visitados):
-        heur_actual = 0
-        heur_menor = 0
-        mas_corto = None
-        es_visitado = False
-
-        for hijo in self.hijos:
-            #recorrer los visitados, si ese nodo (hijo) ya lo visite. lo ignoro
-            for visitado in visitados:
-                if (numpy.array_equal(visitado.estado, hijo.estado)):
-                    es_visitado = True
-            
-            if not es_visitado:
-                heur_actual = hijo.heuristica(meta)
-
-                if (heur_actual == 0):
-                    print("Solucion encontrada")
-                    hijo.imprime_estado()
-                    return
-                if (heur_menor == 0):
-                    heur_menor = hijo.heuristica(meta)
-                    mas_corto = hijo
-                else:
-                    if (heur_actual < heur_menor):
-                        heur_menor = heur_actual
-                        mas_corto = hijo
-            
-            es_visitado = False
-        
-        visitados.append(Nodo(copy.deepcopy(mas_corto.estado)))
-        mas_corto.expande("_", meta, visitados)
-
-# ******* main *********
-# raiz = Nodo(estado_inicial)
-# nodo_meta = Nodo(meta)
-# raiz.heuristica(nodo_meta)
-
-# print("Estado inicial")
-# raiz.imprime_estado()
-
-# camino = raiz.greedy_marin(nodo_meta)
-# print("El camino a la solucion es: ")
-# for i in camino:
-#     i.imprime_estado()
