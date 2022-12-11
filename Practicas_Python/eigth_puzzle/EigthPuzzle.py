@@ -118,7 +118,65 @@ class Nodo(object):
         self.expande_hijos(meta, franja)
         self.ordena_greedy(franja)
         return None
-    
+
+    def bpa(self, meta, visitados, franja):
+        franja.append(self)
+
+        while not franja == []:
+            frente = franja.pop(0)
+            if frente.estado == meta.estado:
+                print("Se econtro la solucion!")
+                camino = []
+                camino.append(frente)
+                padre = frente.padre
+                while padre:
+                    camino.append(padre)
+                    padre = padre.padre
+                return camino
+
+            es_visitado = False
+            for visitado in visitados:
+                if visitado.estado == frente.estado:
+                    es_visitado = True
+                    break
+
+            if not es_visitado:
+                frente.expande_hijos(meta, franja)
+                visitados.append(frente)
+
+        return None
+
+    def bpp(self, meta, visitados, franja):
+        franja.append(self)
+
+        while not franja == []:
+            frente = franja.pop(0)
+            if frente.estado == meta.estado:
+                print("Se econtro la solucion!")
+                camino = []
+                camino.append(frente)
+                padre = frente.padre
+                while padre:
+                    camino.append(padre)
+                    padre = padre.padre
+                return camino
+
+            es_visitado = False
+            for visitado in visitados:
+                if visitado.estado == frente.estado:
+                    es_visitado = True
+                    break
+
+            if not es_visitado:
+                frente.expande_hijos(meta, franja)
+                pos = 0
+                for hijo in frente.hijos:
+                    franja.insert(pos, hijo)
+                    pos += 1
+                visitados.append(frente)
+
+        return None
+
     def busqueda_greedy(self, meta, visitados, franja):
         #if eres tu
         # if es visitado
@@ -150,6 +208,7 @@ class Nodo(object):
             for visitado in visitados:
                 if numpy.array_equal(frente.estado, visitado.estado):
                     es_visitado = True
+                    break
 
             if not es_visitado:
                 visitados.append(frente)

@@ -38,10 +38,14 @@ print("Estado inicial")
 raiz.imprime_estado()
 
 print(">>>>>> Busqueda Primero por Anchura <<<<<")
+camino = raiz.bpa(nodo_meta, visitados, franja)
+imprime_camino(camino)
 
 visitados.clear()
 franja.clear()
 print(">>>>>> Busqueda Primero por Profundidad <<<<<")
+camino = raiz.bpp(nodo_meta, visitados, franja)
+imprime_camino(camino)
 
 visitados.clear()
 franja.clear()
