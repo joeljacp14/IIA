@@ -1,13 +1,11 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scripts/Pacman.gd" type="Script" id=1]
 [ext_resource path="res://Pacman.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Walls.tscn" type="PackedScene" id=3]
 [ext_resource path="res://pacman-song.wav" type="AudioStream" id=4]
-[ext_resource path="res://Waka Waka.gd" type="Script" id=5]
 [ext_resource path="res://blue_ghost.tscn" type="PackedScene" id=6]
 [ext_resource path="res://orange_ghost.tscn" type="PackedScene" id=7]
-[ext_resource path="res://pacman-waka-waka.wav" type="AudioStream" id=8]
 [ext_resource path="res://pink_ghost.tscn" type="PackedScene" id=9]
 [ext_resource path="res://red_ghost.tscn" type="PackedScene" id=10]
 
@@ -21,11 +19,6 @@ bake_navigation = true
 
 [node name="Pacman" parent="." instance=ExtResource( 2 )]
 script = ExtResource( 1 )
-
-[node name="Waka Waka" type="AudioStreamPlayer" parent="Pacman"]
-stream = ExtResource( 8 )
-autoplay = true
-script = ExtResource( 5 )
 
 [node name="Cancion" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 4 )
