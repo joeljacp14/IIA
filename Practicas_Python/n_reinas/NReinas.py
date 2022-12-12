@@ -1,5 +1,8 @@
+import copy
+
 class Nodo(object):
     def __int__(self, estado, padre=None):
+        super(Nodo, self).__int__()
         self.estado = estado
         self.h = 0
         self.hijos = []
@@ -13,26 +16,75 @@ class Nodo(object):
         print("Heuristica:", self.heur)
         print("=======================")
 
-    def busca_ficha(self, ficha):
+    def busca_reinas(self):
+        reinas = []
         col = 0
         reg = 0
         for renglon in self.estado:
             for columna in renglon:
-                if columna == ficha:
-                    return (reg, col)
+                if columna == "X":
+                    reinas.append([reg, col])
                 col = col + 1
             reg = reg + 1
             col = 0
-        return (None, None)
+        return reinas
 
     def heuristica(self, meta):
-        pass
+        h = 0
+        reinas_estado = self.busca_reinas()
+        reinas_meta = meta.busca_reinas()
+
+        for re in reinas_estado:
+            for ce in re:
+                for rm in reinas_meta:
+                    if re == rm[0]:
+                        h += abs(rm[0] - re)
+                    if ce == rm[1]:
+                        h += abs(rm[1] - ce)
+
+        self.h = h
+
 
     def expande(self, meta, franja):
+        reinas = self.busca_reinas()
+        lenght = len(reinas)
+
+        if lenght == 1:
+            for renglon in self.estado:
+                for columna in renglon:
+                    if not (renglon == reinas[0][0] or columna == reinas[0][1]):
+                        estado = copy.deepcopy(self.estado)
+                        estado[renglon][columna] = "X"
+                        hijo = Nodo(estado, self)
+                        hijo.heuristica(meta)
+                        self.hijos.append(hijo)
+
+        if lenght == 2:
+            for renglon in self.estado:
+                for columna in renglon:
+                    if not (renglon == reinas[0][0] or columna == reinas[0][1] or
+                            renglon == reinas[1][0] or columna == reinas[1][1]):
+                        estado = copy.deepcopy(self.estado)
+                        estado[renglon][columna] = "X"
+                        hijo = Nodo(estado, self)
+                        hijo.heuristica(meta)
+                        self.hijos.append(hijo)
+
+        if lenght == 3:
+            for renglon in self.estado:
+                for columna in renglon:
+                    if not (renglon == reinas[0][0] or columna == reinas[0][1] or
+                            renglon == reinas[1][0] or columna == reinas[1][1] or
+                            renglon == reinas[2][0] or columna == reinas[2][1]):
+                        estado = copy.deepcopy(self.estado)
+                        estado[renglon][columna] = "X"
+                        hijo = Nodo(estado, self)
+                        hijo.heuristica(meta)
+                        self.hijos.append(hijo)
 
         for hijo in self.hijos:
             franja.append(hijo)
-        franja.sort(key=lambda x: x.fn)
+        franja.sort(key=lambda x: x.h)
 
     def greedy(self, meta, visitados, franja):
         franja.append(self)
