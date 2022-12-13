@@ -2,7 +2,7 @@ extends Area2D
 
 onready var walls = get_parent().get_node("Navigation2D/Walls")
 onready var game = get_parent()
-onready var pacman = get_parent().get_node("Pacman") #goal
+var pacman #goal
 
 onready var visits : Array = []
 onready var fringe : Array = []
@@ -16,6 +16,8 @@ var tile_pos
 func _ready():
 	
 	position = walls.get_fantasma_pos()
+	
+	pacman = get_parent().get_node("Pacman")
 	
 	tile_pos = walls.world_to_map(pacman.global_position)
 	print("PAC MAN: ", tile_pos.x, " ", tile_pos.y)
@@ -41,6 +43,8 @@ func _process(delta):
 		else:
 			#position = walls.get_fantasma_pos()
 			
+			pacman = get_parent().get_node("Pacman")
+			
 			tile_pos = walls.world_to_map(pacman.global_position)
 			print("PAC MAN: ", tile_pos.x, " ", tile_pos.y)
 			var goal = Vector2(int(round(tile_pos.x)), int(round(tile_pos.y)))
@@ -56,7 +60,19 @@ func _process(delta):
 	else:
 		#position = walls.get_fantasma_pos()
 		print("ya no hay camino rojo")
-		return
+		
+		pacman = get_parent().get_node("Pacman")
+			
+		tile_pos = walls.world_to_map(pacman.global_position)
+		print("PAC MAN: ", tile_pos.x, " ", tile_pos.y)
+		var goal = Vector2(int(round(tile_pos.x)), int(round(tile_pos.y)))
+		
+		tile_pos = walls.world_to_map(global_position)
+		print("RED GHOST: ", tile_pos.x, " ", tile_pos.y)
+		greedy_root = GreedyNode.new(tile_pos.x, tile_pos.y)
+		visits.clear()
+		fringe.clear()
+		path = greedy_root.search(goal, visits, fringe, walls)
 
 
 func _on_red_ghost_area_entered(area):
