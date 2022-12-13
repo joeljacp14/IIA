@@ -28,7 +28,7 @@ func _ready():
 	greedy_root = GreedyNode.new(tile_pos.x, tile_pos.y)
 	path = greedy_root.search(goal, visits, fringe, walls)
 			
-	path = walls.get_path_to_player("red_ghost")
+	#path = walls.get_path_to_player("red_ghost")
 	
 func _process(delta):
 	if not path == null:
