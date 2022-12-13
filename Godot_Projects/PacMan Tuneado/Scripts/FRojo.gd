@@ -7,7 +7,7 @@ var pacman #goal
 onready var visits : Array = []
 onready var fringe : Array = []
 
-var path = []
+var path = [PoolVector2Array()]
 var direction = Vector2(0,0)
 var speed = 30
 var greedy_root
@@ -151,7 +151,8 @@ class GreedyNode:
 				way.append(Vector2(parent.posx, parent.posy))
 				parent = parent.parent
 			way.invert()
-			return way
+			return PoolVector2Array(way)
+			#return way
 		
 		var is_visited = false
 		if not visits == []:
