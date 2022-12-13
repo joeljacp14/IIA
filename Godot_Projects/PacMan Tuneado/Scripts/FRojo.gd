@@ -4,10 +4,8 @@ onready var walls = get_parent().get_node("Navigation2D/Walls")
 onready var game = get_parent()
 onready var pacman = get_parent().get_node("Pacman") #goal
 
-onready var greedy_visits : Array = []
-onready var greedy_fringe : Array = []
-onready var astar_visits = []
-onready var astar_fringe = []
+onready var visits : Array = []
+onready var fringe : Array = []
 
 var path = []
 var direction = Vector2(0,0)
@@ -25,36 +23,40 @@ func _ready():
 	
 	tile_pos = walls.world_to_map(global_position)
 	print("RED GHOST: ", tile_pos.x, " ", tile_pos.y)
-	var greedy_root = GreedyNode.new(tile_pos.x, tile_pos.y)
-	path = greedy_root.search(goal, greedy_visits, greedy_fringe, walls)
+	greedy_root = GreedyNode.new(tile_pos.x, tile_pos.y)
+	path = greedy_root.search(goal, visits, fringe, walls)
 			
 	path = walls.get_path_to_player("red_ghost")
 	
 func _process(delta):
-	if path == null:
-		print("No hay camino :(")
-		return
-	if (path.size() > 1):
-		var pos_to_move = path[0]
-		direction = (pos_to_move - position).normalized()
-		var distance = position.distance_to(path[0])
-		if (distance>1):
-			position += speed * delta * direction
+	if not path == null:
+		if (path.size() > 1):
+			var pos_to_move = path[0]
+			direction = (pos_to_move - position).normalized()
+			var distance = position.distance_to(path[0])
+			if (distance>1):
+				position += speed * delta * direction
+			else:
+				path.remove(0)
 		else:
-			path.remove(0)
+			#position = walls.get_fantasma_pos()
+			
+			tile_pos = walls.world_to_map(pacman.global_position)
+			print("PAC MAN: ", tile_pos.x, " ", tile_pos.y)
+			var goal = Vector2(int(round(tile_pos.x)), int(round(tile_pos.y)))
+			
+			tile_pos = walls.world_to_map(global_position)
+			print("RED GHOST: ", tile_pos.x, " ", tile_pos.y)
+			greedy_root = GreedyNode.new(tile_pos.x, tile_pos.y)
+			visits.clear()
+			fringe.clear()
+			path = greedy_root.search(goal, visits, fringe, walls)
+			
+			#path = walls.get_path_to_player("red_ghost")
 	else:
-		position = walls.get_fantasma_pos()
-		
-		tile_pos = walls.world_to_map(pacman.global_position)
-		print("PAC MAN: ", tile_pos.x, " ", tile_pos.y)
-		var goal = Vector2(int(round(tile_pos.x)), int(round(tile_pos.y)))
-		
-		tile_pos = walls.world_to_map(global_position)
-		print("RED GHOST: ", tile_pos.x, " ", tile_pos.y)
-		var greedy_root = GreedyNode.new(tile_pos.x, tile_pos.y)
-		path = greedy_root.search(goal, greedy_visits, greedy_fringe, walls)
-	
-		#path = walls.get_path_to_player("red_ghost")
+		#position = walls.get_fantasma_pos()
+		print("ya no hay camino rojo")
+		return
 
 
 func _on_red_ghost_area_entered(area):
@@ -122,7 +124,7 @@ class GreedyNode:
 		
 	
 	func search(goal, visits, fringe, tile_map):# la busqueda greedy es totalmente recursiva
-		print("Se atiende")
+		print("Se atiende rojo")
 		self.print_position()
 		if self.posx == goal.x and self.posy == goal.y:
 			print("SE ENCONTRO LA META!!!")
@@ -148,6 +150,6 @@ class GreedyNode:
 		
 		if not fringe == []:
 			return fringe.pop_front().search(goal, visits, fringe, tile_map)
-		print("No hay solucion")
+		print("No hay solucion rojo")
 		return null
 		

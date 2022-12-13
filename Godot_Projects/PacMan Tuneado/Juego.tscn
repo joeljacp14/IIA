@@ -15,6 +15,7 @@
 
 [node name="Walls" parent="Navigation2D" instance=ExtResource( 3 )]
 show_collision = true
+bake_navigation = true
 
 [node name="Pacman" parent="." instance=ExtResource( 2 )]
 script = ExtResource( 1 )
