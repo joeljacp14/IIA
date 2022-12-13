@@ -18,7 +18,7 @@ func _ready():
 	position = walls.get_fantasma_pos()
 	
 	tile_pos = walls.world_to_map(pacman.global_position)
-	print("PAC MAN: ", tile_pos.x, " ", tile_pos.y)
+	print("PAC-MAN: ", tile_pos.x, " ", tile_pos.y)
 	var goal = Vector2(int(round(tile_pos.x)), int(round(tile_pos.y)))
 	
 	tile_pos = walls.world_to_map(global_position)
@@ -26,7 +26,7 @@ func _ready():
 	var bfs_root = BFSNode.new(tile_pos.x, tile_pos.y)
 	path = bfs_root.search(goal, bfs_visits, bfs_fringe, walls)
 			
-	path = walls.get_path_to_player("blue_ghost")
+	#path = walls.get_path_to_player("blue_ghost")
 	print("path azul: ", path)
 	
 func _process(delta):
@@ -42,7 +42,8 @@ func _process(delta):
 		else:
 			path.remove(0)
 	else:
-		position = walls.get_fantasma_pos()
+		
+#		position = walls.get_fantasma_pos()
 		
 		tile_pos = walls.world_to_map(pacman.global_position)
 		print("PAC-MAN: ", tile_pos.x, " ", tile_pos.y)
@@ -53,7 +54,7 @@ func _process(delta):
 		var bfs_root = BFSNode.new(tile_pos.x, tile_pos.y)
 		path = bfs_root.search(goal, bfs_visits, bfs_fringe, walls)
 	
-		#path = walls.get_path_to_player("red_ghost")
+		path = walls.get_path_to_player("blue_ghost")
 
 
 func _on_blue_ghost_area_entered(area):
@@ -99,8 +100,8 @@ class BFSNode:
 			move = BFSNode.new(self.posx - 1, self.posy, self)
 			self.branches.append(move)
 		
-#		for branch in self.branches:
-#			fringe.append(branch)
+		for branch in self.branches:
+			fringe.append(branch)
 		
 	
 #	func search(goal, visits, fringe, tile_map):
