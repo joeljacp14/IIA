@@ -1,3 +1,4 @@
+#BUSQUEDA PRIMERO EN ANCHURA (BPA - BFS)
 extends Area2D
 
 onready var walls = get_parent().get_node("Navigation2D/Walls")
@@ -144,5 +145,5 @@ class BFSNode:
 
 		if not fringe == []:
 			return fringe.pop_front().search(goal, visits, fringe, tile_map)
-		print("No hay solucion")
+		print("No hay solucion AZUL")
 		return []
