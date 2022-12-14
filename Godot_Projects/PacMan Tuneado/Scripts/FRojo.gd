@@ -1,15 +1,15 @@
 extends Area2D
 
 onready var walls = get_parent().get_node("Navigation2D/Walls")
-onready var game = get_parent()
 var pacman #goal
 
 onready var visits : Array = []
 onready var fringe : Array = []
 
-var path = [PoolVector2Array()]
+var path
 var direction = Vector2(0,0)
 var speed = 30
+
 var greedy_root
 var tile_pos
 
@@ -31,38 +31,19 @@ func _ready():
 	#path = walls.get_path_to_player("red_ghost")
 	
 func _process(delta):
-	if not path == null:
-		if (path.size() > 1):
-			var pos_to_move = path[0]
-			direction = (pos_to_move - position).normalized()
-			var distance = position.distance_to(path[0])
-			if (distance>1):
-				position += speed * delta * direction
-			else:
-				path.remove(0)
+	if (path.size() > 1):
+		var pos_to_move = path[0]
+		direction = (pos_to_move - position).normalized()
+		var distance = position.distance_to(path[0])
+		if (distance>1):
+			position += speed * delta * direction
 		else:
-			#position = walls.get_fantasma_pos()
-			
-			pacman = get_parent().get_node("Pacman")
-			
-			tile_pos = walls.world_to_map(pacman.global_position)
-			print("PAC MAN: ", tile_pos.x, " ", tile_pos.y)
-			var goal = Vector2(int(round(tile_pos.x)), int(round(tile_pos.y)))
-			
-			tile_pos = walls.world_to_map(global_position)
-			print("RED GHOST: ", tile_pos.x, " ", tile_pos.y)
-			greedy_root = GreedyNode.new(tile_pos.x, tile_pos.y)
-			visits.clear()
-			fringe.clear()
-			path = greedy_root.search(goal, visits, fringe, walls)
-			
-			#path = walls.get_path_to_player("red_ghost")
+			path.remove(0)
 	else:
 		#position = walls.get_fantasma_pos()
-		print("ya no hay camino rojo")
 		
 		pacman = get_parent().get_node("Pacman")
-			
+		
 		tile_pos = walls.world_to_map(pacman.global_position)
 		print("PAC MAN: ", tile_pos.x, " ", tile_pos.y)
 		var goal = Vector2(int(round(tile_pos.x)), int(round(tile_pos.y)))
@@ -73,6 +54,8 @@ func _process(delta):
 		visits.clear()
 		fringe.clear()
 		path = greedy_root.search(goal, visits, fringe, walls)
+		
+		#path = walls.get_path_to_player("red_ghost")
 
 
 func _on_red_ghost_area_entered(area):
@@ -145,10 +128,17 @@ class GreedyNode:
 		if self.posx == goal.x and self.posy == goal.y:
 			print("SE ENCONTRO LA META!!!")
 			var way = []
-			way.append(Vector2(self.posx, self.posy))
+			var world_pos
+			world_pos = tile_map.map_to_world(Vector2(self.posx, self.posy))
+			world_pos.x = world_pos.x + 4
+			world_pos.y = world_pos.y + 4
+			way.append(world_pos)
 			var parent = self.parent
 			while parent:
-				way.append(Vector2(parent.posx, parent.posy))
+				world_pos = tile_map.map_to_world(Vector2(parent.posx, parent.posy))
+				world_pos.x = world_pos.x + 4
+				world_pos.y = world_pos.y + 4
+				way.append(world_pos)
 				parent = parent.parent
 			way.invert()
 			return PoolVector2Array(way)
@@ -168,5 +158,5 @@ class GreedyNode:
 		if not fringe == []:
 			return fringe.pop_front().search(goal, visits, fringe, tile_map)
 		print("No hay solucion rojo")
-		return null
+		return []
 		

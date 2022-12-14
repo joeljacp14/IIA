@@ -54,7 +54,7 @@ func _process(delta):
 		var bfs_root = BFSNode.new(tile_pos.x, tile_pos.y)
 		path = bfs_root.search(goal, bfs_visits, bfs_fringe, walls)
 	
-		path = walls.get_path_to_player("blue_ghost")
+		#path = walls.get_path_to_player("blue_ghost")
 
 
 func _on_blue_ghost_area_entered(area):
