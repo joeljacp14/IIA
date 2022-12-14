@@ -10,11 +10,13 @@
 [ext_resource path="res://red_ghost.tscn" type="PackedScene" id=10]
 
 [node name="Juego" type="Node2D"]
+position = Vector2( -1, 0 )
 
 [node name="Navigation2D" type="Navigation2D" parent="."]
 
 [node name="Walls" parent="Navigation2D" instance=ExtResource( 3 )]
 show_collision = true
+bake_navigation = true
 
 [node name="Pacman" parent="." instance=ExtResource( 2 )]
 script = ExtResource( 1 )

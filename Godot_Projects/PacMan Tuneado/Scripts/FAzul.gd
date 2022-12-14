@@ -62,6 +62,7 @@ func _process(delta):
 func _on_blue_ghost_area_entered(area):
 	if (area.name == "Pacman"):
 		print("GAME OVER")
+		get_tree().change_scene("res://GameOver.tscn")
 
 class BFSNode:
 	var posx
