@@ -45,6 +45,7 @@ func _process(delta):
 	if (contador == 0):
 		print("*****FELICIDADES HAS GANADO*****")
 		set_process(false)
+		get_tree().change_scene("res://YouWin.tscn")
 
 func get_fantasma_pos():                    #Posicion incial de los fantasmas
 	var pos = map_to_world(Vector2(14,11))
@@ -68,3 +69,4 @@ func get_path_to_player(fantasma):          #Regresa el camino exclusivo de cada
 	#return path2   #Ruta de fantasma rojo
 	#return path3   #Ruta de fantasma naranja
 	#return path4   #Ruta de fantasma azul
+

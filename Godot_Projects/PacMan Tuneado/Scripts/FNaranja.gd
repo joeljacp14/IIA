@@ -9,7 +9,7 @@ onready var dfs_fringe : Array = []
 
 var path
 var direction = Vector2(0,0)
-var speed = 30
+var speed = 1
 
 var dfs_root
 var tile_pos
@@ -59,7 +59,7 @@ func _process(delta):
 		#path = walls.get_path_to_player("blue_ghost")
 
 
-func _on_blue_ghost_area_entered(area):
+func _on_orange_ghost_area_entered(area):
 	if (area.name == "Pacman"):
 		print("GAME OVER")
 		get_tree().change_scene("res://GameOver.tscn")

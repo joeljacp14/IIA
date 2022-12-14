@@ -8,7 +8,7 @@ onready var fringe : Array = []
 
 var path
 var direction = Vector2(0,0)
-var speed = 30
+var speed = 1
 
 var greedy_root
 var tile_pos
