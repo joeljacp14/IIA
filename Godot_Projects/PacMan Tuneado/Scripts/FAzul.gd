@@ -103,7 +103,7 @@ class BFSNode:
 			move = BFSNode.new(self.posx - 1, self.posy, self)
 			self.branches.append(move)
 		
-		for branch in self.branches:
+		for branch in self.branches:          #no ordena los hijos, solo los mete a la franja
 			fringe.append(branch)
 		
 

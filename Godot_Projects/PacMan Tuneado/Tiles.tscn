@@ -20,6 +20,7 @@ outlines = [ PoolVector2Array( 0, 0, 8, 0, 8, 8, 0, 8 ) ]
 [node name="Tiles" type="Node2D"]
 
 [node name="00" type="Sprite" parent="."]
+position = Vector2( 0, 1 )
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true

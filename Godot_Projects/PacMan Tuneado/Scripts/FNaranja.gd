@@ -100,7 +100,7 @@ class DFSNode:
 		
 		for branch in self.branches:
 			var pos = 0
-			fringe.insert(pos, branch)
+			fringe.insert(pos, branch)       #Hace inserts a una posción en específicp
 			pos += 1
 		
 

@@ -3,8 +3,8 @@
 [ext_resource path="res://Assets/Arcade - Pac-Man - General Sprites.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/FNaranja.gd" type="Script" id=2]
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 4, 4 )
+[sub_resource type="CircleShape2D" id=1]
+radius = 4.12311
 
 [node name="orange_ghost" type="Area2D"]
 script = ExtResource( 2 )
@@ -19,5 +19,5 @@ region_rect = Rect2( 227.856, 56.1647, 7.90125, 7.90123 )
 position = Vector2( 4, 4 )
 shape = SubResource( 1 )
 
-[connection signal="area_entered" from="." to="." method="_on_FNaranja_area_entered"]
 [connection signal="area_entered" from="." to="." method="_on_orange_ghost_area_entered"]
+[connection signal="area_entered" from="." to="." method="_on_FNaranja_area_entered"]

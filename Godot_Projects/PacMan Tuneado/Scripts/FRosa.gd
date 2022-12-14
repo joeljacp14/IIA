@@ -28,7 +28,6 @@ func _ready():
 	greedy_root = GreedyNode.new(tile_pos.x, tile_pos.y)
 	path = greedy_root.search(goal, visits, fringe, walls)
 			
-	#path = walls.get_path_to_player("red_ghost")
 	
 func _process(delta):
 	if (path.size() > 1):
@@ -40,7 +39,6 @@ func _process(delta):
 		else:
 			path.remove(0)
 	else:
-		#position = walls.get_fantasma_pos()
 		
 		pacman = get_parent().get_node("Pacman")
 		
@@ -55,9 +53,6 @@ func _process(delta):
 		fringe.clear()
 		path = greedy_root.search(goal, visits, fringe, walls)
 		
-		#path = walls.get_path_to_player("red_ghost")
-
-
 class GreedyNode:
 	var posx
 	var posy
@@ -75,16 +70,16 @@ class GreedyNode:
 		self.branches = []
 		self.parent = parent
 		
-		if (parent):       #AGREGAMOS PESO 
-			self.peso = parent.peso+1
+		if (parent):                             #AGREGAMOS PESO 
+			self.peso = parent.peso+1            #Le agrega peso a cada nodo
 		else:
-			self.peso=0
+			self.peso=0                          #Si no hay padre el peso es igual a 0
 	
 	func print_position():
 		print("x: ", self.posx, ", y: ", self.posy)
 		
-	func f_nAS():                   #A*
-		self.fn = self.peso + self.h
+	func f_nAS():                               #A*
+		self.fn = self.peso + self.h            #Calculo fn = peso + heuristica
 	
 	func heuristic(goal):
 		self.h = abs(goal.x - self.posx) + abs(goal.y - self.posy)
@@ -97,7 +92,7 @@ class GreedyNode:
 		if cell == 12 or cell == 13 or cell == 14:
 			move = GreedyNode.new(self.posx, self.posy - 1, self)
 			move.heuristic(goal)
-			move.f_nAS()
+			move.f_nAS()                  #se saca el estimado
 			self.branches.append(move)
 		
 		cell = tile_map.get_cell(self.posx + 1, self.posy)
@@ -121,7 +116,7 @@ class GreedyNode:
 			move.f_nAS()
 			self.branches.append(move)
 		
-		for branch in self.branches:
+		for branch in self.branches:          #Ordenamiento por fn
 			if fringe == []:
 				fringe.append(branch)
 			else:
@@ -134,8 +129,6 @@ class GreedyNode:
 		
 	
 	func search(goal, visits, fringe, tile_map):# la busqueda greedy es totalmente recursiva
-#		print("Se atiende rosa")
-#		self.print_position()
 		if self.posx == goal.x and self.posy == goal.y:
 			print("Fantasma llegó a PACMAN X_x")
 			var way = []
@@ -153,7 +146,6 @@ class GreedyNode:
 				parent = parent.parent
 			way.invert()
 			return PoolVector2Array(way)
-			#return way
 		
 		var is_visited = false
 		if not visits == []:
