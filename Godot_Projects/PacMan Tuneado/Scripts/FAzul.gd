@@ -1,21 +1,23 @@
 extends Area2D
 
 onready var walls = get_parent().get_node("Navigation2D/Walls")
-onready var game = get_parent()
-onready var pacman = get_parent().get_node("Pacman")
+var pacman #goal
 
 onready var bfs_visits : Array = []
 onready var bfs_fringe : Array = []
 
-var path = []
+var path
 var direction = Vector2(0,0)
 var speed = 30
-var bfs_root	#	Breadth First Search
+
+var bfs_root
 var tile_pos
 
 func _ready():
 	
 	position = walls.get_fantasma_pos()
+	
+	pacman = get_parent().get_node("Pacman")
 	
 	tile_pos = walls.world_to_map(pacman.global_position)
 	print("PAC-MAN: ", tile_pos.x, " ", tile_pos.y)
@@ -23,16 +25,12 @@ func _ready():
 	
 	tile_pos = walls.world_to_map(global_position)
 	print("BLUE GHOST: ", tile_pos.x, " ", tile_pos.y)
-	var bfs_root = BFSNode.new(tile_pos.x, tile_pos.y)
+	bfs_root = BFSNode.new(tile_pos.x, tile_pos.y)
 	path = bfs_root.search(goal, bfs_visits, bfs_fringe, walls)
 			
 	#path = walls.get_path_to_player("blue_ghost")
-	print("path azul: ", path)
 	
 func _process(delta):
-	if path == null:
-		print("BLUE: SIN CAMINO . . .")
-		return
 	if (path.size() > 1):
 		var pos_to_move = path[0]
 		direction = (pos_to_move - position).normalized()
@@ -42,8 +40,9 @@ func _process(delta):
 		else:
 			path.remove(0)
 	else:
-		
 #		position = walls.get_fantasma_pos()
+		
+		pacman = get_parent().get_node("Pacman")
 		
 		tile_pos = walls.world_to_map(pacman.global_position)
 		print("PAC-MAN: ", tile_pos.x, " ", tile_pos.y)
@@ -52,6 +51,8 @@ func _process(delta):
 		tile_pos = walls.world_to_map(global_position)
 		print("BLUE GHOST: ", tile_pos.x, " ", tile_pos.y)
 		var bfs_root = BFSNode.new(tile_pos.x, tile_pos.y)
+		bfs_visits.clear()
+		bfs_fringe.clear()
 		path = bfs_root.search(goal, bfs_visits, bfs_fringe, walls)
 	
 		#path = walls.get_path_to_player("blue_ghost")
@@ -103,56 +104,33 @@ class BFSNode:
 		for branch in self.branches:
 			fringe.append(branch)
 		
-	
-#	func search(goal, visits, fringe, tile_map):
-#		var way = []
-##		var first = []
-#		while not fringe == []:
-#			var first = fringe.pop_front()
-#			# print(primero.posx, primero.posy)
-#			if (first.posx == goal.x) and (first.posy == goal.y):
-#				way.append(first)
-#				var parent = self.parent
-#				while parent:
-#					way.append(parent)
-#					parent = parent.parent
-#				print("Te encontre!!!")
-#				return way
-#
-#			var es_visitado = false
-#			for x, y in visits:
-#				if (first.posx == x) and (first.posy == y):
-#					es_visitado = true
-#					break
-#			if not es_visitado:
-#				visits.append([first.posx, first.posy])
-#
-#				first.expand()
-#
-#				for branch in first.branches:
-#					# print(hijo.posx, hijo.posy)
-#					if fringe == []:
-#						franja.append(branch)
-##						break
-#		return null    
-		
-		
-		
+
 	func search(goal, visits, fringe, tile_map):	
 		var way = []	
+		var world_pos
 		print("* Entra a la cola *")
 		self.print_position()
 		if self.posx == goal.x and self.posy == goal.y:
 			print("* Encuentra la meta *")
-
-			way.append(Vector2(self.posx, self.posy))
+			
+			
+#			way.append(Vector2(self.posx, self.posy))
+			world_pos = tile_map.map_to_world(Vector2(self.posx, self.posy))
+			world_pos.x = world_pos.x + 4
+			world_pos.y = world_pos.y + 4
+			way.append(world_pos)
+			
 			var parent = self.parent
 			while parent:
-				way.append(Vector2(parent.posx, parent.posy))
+				world_pos = tile_map.map_to_world(Vector2(parent.posx, parent.posy))
+				world_pos.x = world_pos.x + 4
+				world_pos.y = world_pos.y + 4
+				way.append(world_pos)
 				parent = parent.parent
 			way.invert()
-			return way
-
+			return PoolVector2Array(way)
+			#return way
+		
 		var is_visited = false
 		if not visits == []:
 			for visited in visits:
@@ -167,4 +145,4 @@ class BFSNode:
 		if not fringe == []:
 			return fringe.pop_front().search(goal, visits, fringe, tile_map)
 		print("No hay solucion")
-		return null
+		return []
