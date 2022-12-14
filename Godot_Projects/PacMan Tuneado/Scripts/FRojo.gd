@@ -8,7 +8,7 @@ onready var fringe : Array = []
 
 var path
 var direction = Vector2(0,0)
-var speed = 1
+var speed = 30
 
 var greedy_root
 var tile_pos
@@ -124,21 +124,21 @@ class GreedyNode:
 		
 	
 	func search(goal, visits, fringe, tile_map):# la busqueda greedy es totalmente recursiva
-		print("Se atiende rojo")
-		self.print_position()
+#		print("Se atiende rojo")
+#		self.print_position()
 		if self.posx == goal.x and self.posy == goal.y:
 			print("SE ENCONTRO LA META!!!")
 			var way = []
 			var world_pos
 			world_pos = tile_map.map_to_world(Vector2(self.posx, self.posy))
-			world_pos.x = world_pos.x + 4
-			world_pos.y = world_pos.y + 4
+			world_pos.x = world_pos.x + 1
+			world_pos.y = world_pos.y + 1
 			way.append(world_pos)
 			var parent = self.parent
 			while parent:
 				world_pos = tile_map.map_to_world(Vector2(parent.posx, parent.posy))
-				world_pos.x = world_pos.x + 4
-				world_pos.y = world_pos.y + 4
+				world_pos.x = world_pos.x + 1
+				world_pos.y = world_pos.y + 1
 				way.append(world_pos)
 				parent = parent.parent
 			way.invert()

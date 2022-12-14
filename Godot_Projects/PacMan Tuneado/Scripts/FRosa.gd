@@ -57,10 +57,6 @@ func _process(delta):
 		
 		#path = walls.get_path_to_player("red_ghost")
 
-func _on_pink_ghost_area_entered(area):
-	if (area.name == "Pacman"):
-		print("GAME OVER")
-		get_tree().change_scene("res://GameOver.tscn")
 
 class GreedyNode:
 	var posx
@@ -138,21 +134,21 @@ class GreedyNode:
 		
 	
 	func search(goal, visits, fringe, tile_map):# la busqueda greedy es totalmente recursiva
-		print("Se atiende rosa")
-		self.print_position()
+#		print("Se atiende rosa")
+#		self.print_position()
 		if self.posx == goal.x and self.posy == goal.y:
 			print("Fantasma llegó a PACMAN X_x")
 			var way = []
 			var world_pos
 			world_pos = tile_map.map_to_world(Vector2(self.posx, self.posy))
-			world_pos.x = world_pos.x + 4
-			world_pos.y = world_pos.y + 4
+			world_pos.x = world_pos.x + 1
+			world_pos.y = world_pos.y + 1
 			way.append(world_pos)
 			var parent = self.parent
 			while parent:
 				world_pos = tile_map.map_to_world(Vector2(parent.posx, parent.posy))
-				world_pos.x = world_pos.x + 4
-				world_pos.y = world_pos.y + 4
+				world_pos.x = world_pos.x + 1
+				world_pos.y = world_pos.y + 1
 				way.append(world_pos)
 				parent = parent.parent
 			way.invert()
@@ -175,3 +171,9 @@ class GreedyNode:
 		print("No hay solucion de rosa")
 		return []
 		
+
+
+func _on_pink_ghost_area_entered(area):
+	if (area.name == "Pacman"):
+		print("GAME OVER")
+		get_tree().change_scene("res://GameOver.tscn")

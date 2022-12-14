@@ -33,5 +33,4 @@ autoplay = true
 
 [node name="red_ghost" parent="." instance=ExtResource( 10 )]
 
-[connection signal="area_entered" from="pink_ghost" to="Navigation2D/Walls" method="_on_pink_ghost_area_entered"]
 [connection signal="area_entered" from="pink_ghost" to="pink_ghost" method="_on_pink_ghost_area_entered"]

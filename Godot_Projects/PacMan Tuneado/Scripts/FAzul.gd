@@ -9,7 +9,7 @@ onready var bfs_fringe : Array = []
 
 var path
 var direction = Vector2(0,0)
-var speed = 1
+var speed = 30
 
 var bfs_root
 var tile_pos
@@ -110,23 +110,23 @@ class BFSNode:
 	func search(goal, visits, fringe, tile_map):	
 		var way = []	
 		var world_pos
-		print("* Entra a la cola *")
-		self.print_position()
+#		print("* Entra a la cola *")
+#		self.print_position()
 		if self.posx == goal.x and self.posy == goal.y:
 			print("* Encuentra la meta *")
 			
 			
 #			way.append(Vector2(self.posx, self.posy))
 			world_pos = tile_map.map_to_world(Vector2(self.posx, self.posy))
-			world_pos.x = world_pos.x + 4
-			world_pos.y = world_pos.y + 4
+			world_pos.x = world_pos.x + 2
+			world_pos.y = world_pos.y + 2
 			way.append(world_pos)
 			
 			var parent = self.parent
 			while parent:
 				world_pos = tile_map.map_to_world(Vector2(parent.posx, parent.posy))
-				world_pos.x = world_pos.x + 4
-				world_pos.y = world_pos.y + 4
+				world_pos.x = world_pos.x + 2
+				world_pos.y = world_pos.y + 2
 				way.append(world_pos)
 				parent = parent.parent
 			way.invert()

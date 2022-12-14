@@ -9,7 +9,7 @@ onready var dfs_fringe : Array = []
 
 var path
 var direction = Vector2(0,0)
-var speed = 1
+var speed = 30
 
 var dfs_root
 var tile_pos
@@ -59,11 +59,6 @@ func _process(delta):
 		#path = walls.get_path_to_player("blue_ghost")
 
 
-func _on_orange_ghost_area_entered(area):
-	if (area.name == "Pacman"):
-		print("GAME OVER")
-		get_tree().change_scene("res://GameOver.tscn")
-
 class DFSNode:
 	var posx
 	var posy
@@ -112,23 +107,23 @@ class DFSNode:
 	func search(goal, visits, fringe, tile_map):	
 		var way = []	
 		var world_pos
-		print("* Entra a la pila *")
-		self.print_position()
+#		print("* Entra a la pila *")
+#		self.print_position()
 		if self.posx == goal.x and self.posy == goal.y:
 			print("* Naranja encuentra la meta . . . *")
 			
 			
 #			way.append(Vector2(self.posx, self.posy))
 			world_pos = tile_map.map_to_world(Vector2(self.posx, self.posy))
-			world_pos.x = world_pos.x + 4
-			world_pos.y = world_pos.y + 4
+			world_pos.x = world_pos.x + 1
+			world_pos.y = world_pos.y + 1
 			way.append(world_pos)
 			
 			var parent = self.parent
 			while parent:
 				world_pos = tile_map.map_to_world(Vector2(parent.posx, parent.posy))
-				world_pos.x = world_pos.x + 4
-				world_pos.y = world_pos.y + 4
+				world_pos.x = world_pos.x + 1
+				world_pos.y = world_pos.y + 1
 				way.append(world_pos)
 				parent = parent.parent
 			way.invert()
@@ -150,3 +145,9 @@ class DFSNode:
 			return fringe.pop_front().search(goal, visits, fringe, tile_map)
 		print("No hay solucion NARANJA")
 		return []
+
+
+func _on_orange_ghost_area_entered(area):
+	if (area.name == "Pacman"):
+		print("GAME OVER")
+		get_tree().change_scene("res://GameOver.tscn")

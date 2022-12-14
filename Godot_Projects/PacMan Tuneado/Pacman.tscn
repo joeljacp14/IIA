@@ -14,7 +14,7 @@ animations = [ {
 } ]
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 4.12311
+radius = 3.16228
 
 [node name="Pacman" type="Area2D"]
 
